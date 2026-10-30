@@ -237,6 +237,14 @@ def merge_articles(articles,old,groups,outlets,max_events=1400):
             " ".join(sorted(words(p.get("title","")))) or p.get("title","").casefold()
             for p in pubs
         })
+        if not ev.get("revisions") and pubs:
+            # Older collected publications predate the revision log: backfill from actual metadata.
+            ev["revisions"]=[
+                {"at":p.get("publishedAt"),"type":"source-added",
+                 "text":"A publisher's report was included in this cluster; underlying claims remain unverified.",
+                 "url":p.get("url"),"title":p.get("title")}
+                for p in pubs
+            ]
         ev["revisions"]=sorted(ev.get("revisions",[]),key=lambda x:x.get("at",""),reverse=True)[:80]
         ev["section"]=section_for(ev.get("reportHeadline",ev.get("title","")))
         ev["reviewStatus"]="unverified-headline-aggregation"
