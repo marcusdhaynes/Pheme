@@ -9,22 +9,18 @@ Political coverage is counted ONLY for outlets with manually evidenced mappings.
 from __future__ import annotations
 
 import argparse
-import concurrent.futures
 import datetime as dt
 import difflib
-import email.utils
 import hashlib
 import html
 import json
 import logging
-import os
 from pathlib import Path
 import re
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
-import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 COUNTRIES = ROOT / "data/countries.json"
@@ -106,28 +102,6 @@ def fetch(url,timeout=18):
     with urllib.request.urlopen(req,timeout=timeout) as response:
         if response.status!=200:raise RuntimeError("HTTP "+str(response.status))
         return response.read(3_000_000)
-
-def _disabled_google_rss(country):
-    label=ALIAS.get(country,country)
-    q='"'+label+'" when:1d'
-    params=urllib.parse.urlencode({"q":q,"hl":"en-US","gl":"US","ceid":"US:en"})
-    url="https://news.google.com/rss/search?"+params
-    root=ET.fromstring(fetch(url))
-    rows=[]
-    for item in root.findall("./channel/item")[:40]:
-        title=tidy(item.findtext("title"))
-        source=item.find("source")
-        publisher=tidy(source.text) if source is not None else "Publisher not identified"
-        if title.endswith(" - "+publisher):title=title[:-(len(publisher)+3)].strip()
-        link=(item.findtext("link") or "").strip()
-        if not title or not link:continue
-        try:created=email.utils.parsedate_to_datetime(item.findtext("pubDate") or "").astimezone(UTC)
-        except (ValueError,TypeError,OverflowError):created=NOW
-        if created < NOW-dt.timedelta(days=3):continue
-        rows.append(dict(title=title,url=link,publisher=publisher,
-                        domain=urllib.parse.urlparse((source.get("url") if source is not None else "") or "").netloc.lower(),
-                        published=created.isoformat(),country=country,api="Google News RSS"))
-    return rows
 
 def gdelt_json(country):
     q='"'+ALIAS.get(country,country)+'"'
@@ -274,23 +248,22 @@ def collect(countries,slot,all_countries=False,disable_network=False,max_workers
     reports=[];errors=[];counts={"gdelt_ok":0}
     def run(job):
         kind,country=job
-        func=google_rss if kind=="rss" else gdelt_json
+        func=gdelt_json
         for attempt in range(2):
             try:return (job,func(country),None)
-            except (urllib.error.URLError,ValueError,ET.ParseError,TimeoutError,RuntimeError) as exc:
+            except (urllib.error.URLError,ValueError,TimeoutError,RuntimeError) as exc:
                 if attempt==0:time.sleep(3 if kind=="gdelt" else 1.2)
                 else:return (job,[],str(exc)[:150])
         return (job,[],"Unknown fetch failure")
     # No burst: DOC API protects shared infrastructure with strict throttling.
     # Serialize the queries and apply a conservative delay between requests.
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-        for idx,job in enumerate(jobs):
-            if idx:time.sleep(5.5)
-            rows_job,rows,error=pool.submit(run,job).result()
-            job=rows_job
-            if error:errors.append({"provider":job[0],"country":job[1],"error":error})
-            else:counts["gdelt_ok"]+=1
-            reports.extend(rows)
+    for idx,job in enumerate(jobs):
+        if idx:time.sleep(5.5)
+        rows_job,rows,error=run(job)
+        job=rows_job
+        if error:errors.append({"provider":job[0],"country":job[1],"error":error})
+        else:counts["gdelt_ok"]+=1
+        reports.extend(rows)
     return reports,selected,errors,counts
 
 def main(argv=None):
