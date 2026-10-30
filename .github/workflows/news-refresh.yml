@@ -16,12 +16,12 @@ permissions:
 
 concurrency:
   group: pheme-news-refresh
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   intake:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 12
     steps:
       - name: Checkout PHEME
         uses: actions/checkout@v4
