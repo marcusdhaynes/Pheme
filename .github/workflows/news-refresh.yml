@@ -13,6 +13,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: pheme-news-refresh
@@ -22,6 +24,8 @@ jobs:
   intake:
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    environment:
+      name: github-pages
     steps:
       - name: Checkout PHEME
         uses: actions/checkout@v4
@@ -64,4 +68,19 @@ jobs:
             exit 0
           fi
           git commit -m "news: refresh attributed global headlines"
-          git push
+          git push || (git pull --rebase origin main && git push)
+      - name: Stage updated edition for GitHub Pages
+        run: |
+          mkdir -p dist/news
+          cp index.html styles.css app.js news-engine.js sw.js icon.svg manifest.webmanifest dist/
+          cp news/stories.json dist/news/stories.json
+          touch dist/.nojekyll
+          test -s dist/news/stories.json
+      - name: Configure Pages for the refreshed edition
+        uses: actions/configure-pages@v5
+      - name: Upload refreshed newspaper
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+      - name: Publish the refreshed edition directly
+        uses: actions/deploy-pages@v4
