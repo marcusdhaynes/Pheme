@@ -339,70 +339,118 @@
   }
   function openStory(story) {
     selectedStory=story;
-    document.getElementById('dialog-kicker').textContent=story.countries.join(' · ')||'WORLD';
-    document.getElementById('dialog-title').textContent=story.title;
+    const pubs=languagePublications(story);
+    const heading=selectedTitle(story);
+    document.getElementById('dialog-kicker').textContent=sectionOf(story).toUpperCase()+' · '+story.countries.join(' · ').toUpperCase();
+    document.getElementById('dialog-title').textContent=heading;
     body.replaceChildren();
-    if(story.summary)body.appendChild(el('p',null,story.summary));
+    const langLabel=el('p','pheme-language-note','SOURCE LANGUAGE: '+LANGS[articleLanguage]+' · '+pubs.length+' ORIGINAL REPORTS');
+    body.appendChild(langLabel);
+    const imagePub=firstImage(story);
+    if(imagePub){
+      const figure=el('figure','pheme-report-figure pheme-reader-image');
+      const im=el('img');im.src=imagePub.image;im.alt='Illustration credited to '+textSource(imagePub);im.loading='lazy';
+      im.referrerPolicy='no-referrer';im.onerror=()=>figure.remove();
+      figure.append(im,el('figcaption',null,'IMAGE FROM '+textSource(imagePub)));
+      body.appendChild(figure);
+    }
+    const intro=el('p','pheme-reader-intro',selectedSummary(story));
+    body.appendChild(intro);
     const sectionControl=el('div','pheme-story-section-control');
     const sectionLabel=el('label',null,'Newspaper section: ');
-    const select=el('select');
-    select.setAttribute('aria-label','Assign this story to a newspaper section');
+    const select=el('select');select.setAttribute('aria-label','Assign this story to a newspaper section');
     SECTIONS.forEach(name=>{const option=el('option',null,name);option.value=name;option.selected=name===sectionOf(story);select.appendChild(option);});
     select.addEventListener('change',()=>{sectionAssignments[story.id]=select.value;persistSections();renderEdition();});
     sectionLabel.appendChild(select);sectionControl.appendChild(sectionLabel);body.appendChild(sectionControl);
-    if(story.reviewStatus==='unverified-headline-aggregation'){
-      body.appendChild(el('p','pheme-review-notice','HEADLINE-LEVEL REPORTING — PHEME has not independently verified these claims. Facts, Doubts and Impacts remain unfilled until supported by evidence.'));
-    }
-    addSection(body,'Facts',story.facts);
-    addSection(body,'Doubts',story.doubts);
+    body.appendChild(el('p','pheme-review-notice',
+      'SOURCE-ATTRIBUTED REPORTING — These descriptions are original publishers’ metadata and have not been independently corroborated. Source appearance does not establish that an underlying claim is true.'));
+    const claims=story.reportedClaims.filter(c=>c.language===articleLanguage);
+    addSection(body,'What publishers report (unverified)',claims.length?claims.map(c=>({
+      text:(c.attribution||'Publisher')+' reports: '+c.text,sources:c.sources||[]
+    })):pubs.filter(p=>p.description).map(p=>({
+      text:textSource(p)+' reports: '+p.description,sources:[{url:p.url,name:'Read original'}]
+    })));
+    addSection(body,'Facts — independently established',story.facts);
+    addSection(body,'Doubts — documented contradictions',story.doubts);
     addSection(body,'Unknowns',story.unknowns);
-    addSection(body,'Parties',story.parties);
-    addSection(body,'Locations',story.locations);
-    addSection(body,'Agendas',story.agendas);
-    addSection(body,'Impacts',story.impacts);
+    addSection(body,'Parties / named actors (automatic mentions, not verified involvement)',story.parties);
+    addSection(body,'Locations (country mentions, not confirmed event geolocation)',story.locations);
+    addSection(body,'Agendas (only when documented)',story.agendas);
+    addSection(body,'Impacts (only when evidenced)',story.impacts);
     renderCoverage(body,story);
-    addSection(body,'Source publications',story.publications.map(p=>({text:(p.title||p.name||p.url||'Source')+' — '+(p.name||p.domain||'Publisher'),sources:[{url:p.url,name:'Open original'}]})));
-    if(story.revisions.length)addSection(body,'Source update history',story.revisions.map(r=>({
+    addSection(body,'Original publications · '+LANGS[articleLanguage],pubs.map(p=>({
+      text:(p.title||'Article')+' — '+textSource(p)+(p.author?' · '+p.author:'')+(p.publishedAt?' · '+p.publishedAt.slice(0,10):''),
+      sources:[{name:'Open source report',url:p.url}]
+    })));
+    if(story.revisions.length)addSection(body,'Source update history',story.revisions.filter(r=>pubs.some(p=>p.url===r.url)).slice(0,35).map(r=>({
       text:(r.at ? new Date(r.at).toLocaleString()+' · ' : '')+(r.text||'New source recorded')+' '+(r.title||''),
       sources:r.url?[{url:r.url,name:'Publication'}]:[]
     })));
     if(!dialog.open)dialog.showModal();
   }
-  function bookmarkIds() {
+    function bookmarkIds() {
     try {const v=JSON.parse(localStorage.getItem('pheme.newsBookmarks')); return Array.isArray(v)?v:[];}catch(_){return [];}
   }
   function renderEdition() {
     document.getElementById('bookmark-count').textContent=bookmarkIds().length||'';
     document.getElementById('bookmarks-button').classList.toggle('nav-active',bookmarkOnly);
     grid.replaceChildren();
-    const note=document.getElementById('search-empty'); if(note)note.remove();
-    ed.textContent='YOUR SELECTED COUNTRIES · ONE EVOLVING ACCOUNT';
-    footer.textContent='EVIDENCE FIRST · ORIGINAL SOURCES PRESERVED';
-    const active=feed.filter(s=>s.countries.some(c=>selected.has(c)));
-    const q=String(search && search.value || '').trim().toLowerCase();
-    const filtered=active.filter(s=>enabledSections.has(sectionOf(s))&&(selectedSection==='All'||sectionOf(s)===selectedSection)&&(!bookmarkOnly||bookmarkIds().includes(s.id))&&(!q||[s.title,s.summary,s.countries.join(' '),s.facts.map(asText).join(' ')].join(' ').toLowerCase().includes(q)));
-    if(!selected.size) {
-      const empty=el('div','pheme-empty-edition');
-      empty.appendChild(el('h2',null,'Your edition awaits'));
-      empty.appendChild(el('p',null,'No countries are selected. Choose countries in Settings to build your personal newspaper.'));
-      const choose=el('button','pheme-empty-button','Choose countries');
-      choose.addEventListener('click',()=>document.getElementById('settings-toggle').click());
-      empty.appendChild(choose);grid.appendChild(empty); return;
-    }
-    if(!filtered.length) {
-      const empty=el('div','pheme-empty-edition');
-      empty.appendChild(el('h2',null,active.length?'No matching reports':'No verified stories available'));
-      empty.appendChild(el('p',null,!enabledSections.size?'Every section is hidden. Enable sections in Settings.':active.length?'Adjust the section filter, enabled sections, search or bookmarks.':feedDiagnostics && feedDiagnostics.status==='no-provider-success'?'The sources have not returned new reports. Existing reports will remain available when collected.':'Your selected countries are saved. Reports appear after the scheduled news intake collects articles for those countries. No invented headlines are displayed.'));
-      grid.appendChild(empty);return;
-    }
+    const note=document.getElementById('search-empty');if(note)note.remove();
+    ed.textContent='THE WORLD THROUGH '+LANGS[articleLanguage].toUpperCase()+' REPORTING';
+    footer.textContent='REPORTS ATTRIBUTED · FACTS REQUIRE INDEPENDENT EVIDENCE';
+    const q=String(search&&search.value||'').trim().toLowerCase();
+    const byCountry=feed.filter(story=>story.countries.some(c=>selected.has(c)));
+    const available=byCountry.filter(story=>languagePublications(story).length>0);
+    const filtered=available.filter(story=>enabledSections.has(sectionOf(story))
+      &&(selectedSection==='All'||sectionOf(story)===selectedSection)
+      &&(!bookmarkOnly||bookmarkIds().includes(story.id))
+      &&(!q||[selectedTitle(story),selectedSummary(story),story.countries.join(' ')].join(' ').toLowerCase().includes(q)));
     const left=el('aside','story-rail left-rail');
     const center=el('section','lead-column');
     const right=el('aside','story-rail right-rail');
-    center.appendChild(storyCard(filtered[0],true));
-    filtered.slice(1).forEach((s,i)=>(i%2===0?left:right).appendChild(storyCard(s,false)));
+    const shorts=el('div','center-briefs pheme-center-briefs');
+    const centerRest=el('div','pheme-center-rest');
+    if(!selected.size){
+      center.appendChild(newspaperPlaceholder('YOUR WORLD, YOUR NEWSPAPER',
+        'Select the countries you wish to follow in Settings. Your choices begin empty, and no country is chosen on your behalf.',true));
+      left.appendChild(newspaperPlaceholder('SELECT YOUR COUNTRIES','Choose any of 195 countries to build your personal edition.'));
+      left.appendChild(newspaperPlaceholder('A GLOBAL NEWSROOM','Publisher reports are collected and combined into evolving events.'));
+      right.appendChild(newspaperPlaceholder('FOLLOW THE EVIDENCE','Every reported detail links to an original source.'));
+      right.appendChild(newspaperPlaceholder('YOUR SETTINGS','Adjust paper, ink, article language and newspaper sections.'));
+      const choose=el('button','pheme-empty-button','CHOOSE COUNTRIES');
+      choose.addEventListener('click',()=>document.getElementById('settings-toggle').click());
+      center.appendChild(choose);
+    } else if(!filtered.length){
+      const missing=!enabledSections.size?'All newspaper sections are hidden. Enable one in Settings.'
+        :byCountry.length && !available.length?'No indexed publications in '+LANGS[articleLanguage]+' yet. Select another reporting language or check again after a refresh.'
+        :byCountry.length?'No stories match the current section, search, or bookmark settings.'
+        :feedDiagnostics&&feedDiagnostics.status==='no-provider-success'?'The news feed is temporarily unavailable. Your country selections have been saved.'
+        :'No country-matched reports have been indexed for your selection in this edition.';
+      center.appendChild(newspaperPlaceholder('THE EDITION IS READY',missing,true));
+      left.appendChild(newspaperPlaceholder('COUNTRIES SELECTED',Array.from(selected).slice(0,12).join(' · ')));
+      right.appendChild(newspaperPlaceholder('SELECTED LANGUAGE',LANGS[articleLanguage]+' — source-language reporting, without unverified translation.'));
+    } else {
+      center.appendChild(storyCard(filtered[0],true,false));
+      filtered.slice(1,3).forEach(story=>shorts.appendChild(storyCard(story,false,true)));
+      if(shorts.childElementCount)center.appendChild(shorts);
+      filtered.slice(3).forEach((story,i)=>{
+        if(i%3===0)left.appendChild(storyCard(story,false,false));
+        else if(i%3===1)right.appendChild(storyCard(story,false,false));
+        else centerRest.appendChild(storyCard(story,false,false));
+      });
+      if(centerRest.childElementCount)center.appendChild(centerRest);
+      if(!left.childElementCount)left.appendChild(newspaperPlaceholder('MORE TO EXPLORE','Additional source reports will appear as new articles are collected.'));
+      if(!right.childElementCount)right.appendChild(newspaperPlaceholder('PERSPECTIVES','Political coverage slots are marked only when source classifications have evidence.'));
+    }
     grid.append(left,center,right);
+    const paper=document.getElementById('pheme-edition-count');
+    if(paper)paper.textContent=selected.size?filtered.length+' STORIES · '+selected.size+' COUNTRIES':'PERSONAL EDITION · NO COUNTRIES SELECTED';
+    const paperDate=document.getElementById('date-label');
+    if(paperDate && feedUpdatedAt){
+      paperDate.setAttribute('title','Feed last collected '+new Date(feedUpdatedAt).toLocaleString());
+    }
   }
-  window.PHEME_NEWS = {
+    window.PHEME_NEWS = {
     ingest(records) { feed=mergeStories(feed.concat(Array.isArray(records)?records:[]));renderEdition();return feed.length; },
     replace(records) { feed=mergeStories(records);renderEdition();return feed.length; },
     getSelectedCountries() {return Array.from(selected);},
@@ -411,6 +459,7 @@
     showAll() {bookmarkOnly=false;selectedSection='All';renderSectionMenu();renderEdition();},
     getEnabledSections() {return [...enabledSections];},
     getCurrentSection() {return selectedSection;},
+    getArticleLanguage() {return articleLanguage;},
     getStoryCount() {return feed.length;}
   };
   // The prior cinema mock edition and its navigation are intentionally retired.
