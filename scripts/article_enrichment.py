@@ -154,15 +154,31 @@ def enrich_event(event):
     event['featuredImage']=next((p.get('image') for p in pubs if p.get('image')),None)
     actors=[];sources=[]
     for pub in pubs[:18]:
-        for name in actor_mentions(pub.get('title'),pub.get('description')):
+        gkg_mentions=list(pub.get('persons',[])[:8])+list(pub.get('organizations',[])[:8])
+        for name in gkg_mentions+actor_mentions(pub.get('title'),pub.get('description')):
             if not any(a['text']==name for a in actors):
                 actors.append({'text':name,'sources':[{'name':pub.get('name') or 'Publisher','url':pub['url']}],
                                'status':'text-mention-unverified'})
         if pub.get('description') and pub.get('url'):sources.append(pub['url'])
-    event['parties']=actors[:10]
-    # Country mentions in HEADLINES are not independently verified event geolocation.
-    event['locations']=[{'text':c+' (mentioned in headlines; event location not verified)',
-                         'status':'country-topic-mention'} for c in event.get('countries',[])]
+    event['parties']=actors[:14]
+    # Locations are AUTOMATED TEXT MENTIONS; none proves the site of an event.
+    loc=[{'text':c+' (headline topic mention; not verified geolocation)',
+          'status':'country-topic-mention'} for c in event.get('countries',[])]
+    seen={x['text'].lower() for x in loc}
+    for pub in pubs[:16]:
+        for place in pub.get('places',[])[:12]:
+            title=clean(place,115)
+            if title and title.lower() not in seen and len(loc)<20:
+                loc.append({'text':title+' (machine-indexed article mention; not confirmed event location)',
+                            'sources':[{'url':pub['url'],'name':pub.get('name') or 'Publisher'}],
+                            'status':'machine-indexed-text-mention'})
+                seen.add(title.lower())
+    event['locations']=loc
+    topics=[]
+    for pub in pubs[:10]:
+        for theme in pub.get('themes',[])[:20]:
+            if theme not in topics and len(topics)<20:topics.append(theme)
+    event['topics']=topics
     # Very cautious rule-based signals: these are attributed source claims, NOT established truths.
     event['facts']=[]
     event['doubts']=[]
