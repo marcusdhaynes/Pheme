@@ -218,6 +218,11 @@ def merge_articles(articles,old,groups,outlets,max_events=1400):
                 if (country,g["id"]) not in existing_groups:
                     ev["groups"].append(dict(g,country=country)); existing_groups.add((country,g["id"]))
         ev["publications"].append(pub)
+        ev.setdefault("revisions",[]).append({
+            "at":article["published"],"type":"source-added",
+            "text":"A publisher's report was added to this event cluster; underlying claims remain unverified.",
+            "url":article["url"],"title":article["title"]
+        })
         if article["published"]>str(ev.get("updatedAt") or ""):
             ev["updatedAt"]=article["published"]
         add_coverage(ev,pub,outlets,groups)
@@ -228,6 +233,11 @@ def merge_articles(articles,old,groups,outlets,max_events=1400):
         ev["countries"]=sorted(set(ev.get("countries",[])))
         ev["summary"]=str(len(pubs))+" attributed publication(s) reported related headlines. These reports have not been independently fact-checked by PHEME."
         ev["sourceCount"]=len(pubs)
+        ev["headlineVariantCount"]=len({
+            " ".join(sorted(words(p.get("title","")))) or p.get("title","").casefold()
+            for p in pubs
+        })
+        ev["revisions"]=sorted(ev.get("revisions",[]),key=lambda x:x.get("at",""),reverse=True)[:80]
         ev["section"]=section_for(ev.get("reportHeadline",ev.get("title","")))
         ev["reviewStatus"]="unverified-headline-aggregation"
         ev["facts"]=[]  # Crucial: publication count != evidence that an event claim is true.
