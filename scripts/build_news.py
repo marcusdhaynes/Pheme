@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PHEME evidence-aware news intake.
 
-Ingest GDELT DOC 2.0 (JSON) and public Google News RSS (XML) without API keys.
+Ingest GDELT DOC 2.0 (JSON) without API keys.
 This is a discovery/attribution pipeline, NOT independent fact verification.
 Country names in searches are topic mentions; never assume event location.
 Political coverage is counted ONLY for outlets with manually evidenced mappings.
@@ -107,7 +107,7 @@ def fetch(url,timeout=18):
         if response.status!=200:raise RuntimeError("HTTP "+str(response.status))
         return response.read(3_000_000)
 
-def google_rss(country):
+def _disabled_google_rss(country):
     label=ALIAS.get(country,country)
     q='"'+label+'" when:1d'
     params=urllib.parse.urlencode({"q":q,"hl":"en-US","gl":"US","ceid":"US:en"})
@@ -267,11 +267,11 @@ def merge_articles(articles,old,groups,outlets,max_events=1400):
 def collect(countries,slot,all_countries=False,disable_network=False,max_workers=4):
     selected=[c["name"] for i,c in enumerate(countries) if c["name"]!="United States" and
               (all_countries or i%8==slot)]
-    if disable_network:return [],selected,[],{"google_ok":0,"gdelt_ok":0}
-    jobs=[("rss",country) for country in selected]
-    # Use GDELT as a real JSON API supplement for a rotating subset without hammering it.
-    jobs.extend([("gdelt",c) for i,c in enumerate(selected) if i%5==slot%5])
-    reports=[];errors=[];counts={"google_ok":0,"gdelt_ok":0}
+    if disable_network:return [],selected,[],{"gdelt_ok":0}
+    # GDELT is the only production source vetted for this ingestion use.
+    # Google News RSS has reuse restrictions and is intentionally excluded.
+    jobs=[("gdelt",country) for country in selected]
+    reports=[];errors=[];counts={"gdelt_ok":0}
     def run(job):
         kind,country=job
         func=google_rss if kind=="rss" else gdelt_json
@@ -281,10 +281,15 @@ def collect(countries,slot,all_countries=False,disable_network=False,max_workers
                 if attempt==0:time.sleep(3 if kind=="gdelt" else 1.2)
                 else:return (job,[],str(exc)[:150])
         return (job,[],"Unknown fetch failure")
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
-        for job,rows,error in pool.map(run,jobs):
+    # No burst: DOC API protects shared infrastructure with strict throttling.
+    # Serialize the queries and apply a conservative delay between requests.
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        for idx,job in enumerate(jobs):
+            if idx:time.sleep(5.5)
+            rows_job,rows,error=pool.submit(run,job).result()
+            job=rows_job
             if error:errors.append({"provider":job[0],"country":job[1],"error":error})
-            else:counts["google_ok" if job[0]=="rss" else "gdelt_ok"]+=1
+            else:counts["gdelt_ok"]+=1
             reports.extend(rows)
     return reports,selected,errors,counts
 
@@ -306,11 +311,11 @@ def main(argv=None):
     slot=NOW.hour//3
     articles,selected,errors,counts=collect(countries,slot,args.all,args.offline)
     events,added=merge_articles(articles,previous.get("events",[]),group_catalogs,outlets,max_events=args.max_events)
-    diagnostic=dict(status="ok" if counts["google_ok"] or counts["gdelt_ok"] else "no-provider-success",
+    diagnostic=dict(status="ok" if counts["gdelt_ok"] else "no-provider-success",
         searchedCountries=len(selected),receivedArticles=len(articles),
         addedPublications=added,providers=counts,errors=errors[:35],
         policy="Article headlines are attributed reports, not verified facts. Political affiliations require documented outlet mappings.",
-        note="Coverage rotates across 194 countries over eight 3-hour slots; United States deferred.")
+        note="GDELT-only intake rotates across 194 countries over eight 3-hour slots; United States deferred. Source API calls are serialized and rate-limited.")
     write_json(OUTPUT,dict(updatedAt=NOW.isoformat(),events=events,diagnostics=diagnostic))
     log.info("Countries=%s source reports=%s new publications=%s events=%s provider results=%s",
              len(selected),len(articles),added,len(events),counts)
