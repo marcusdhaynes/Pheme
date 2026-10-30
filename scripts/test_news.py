@@ -122,7 +122,7 @@ class NewsTests(unittest.TestCase):
         cols[9]='1#Paris, France#FR#'
         cols[11]='Jane Smith;Alex Jones'
         cols[13]='World Health Organization;Local Council'
-        raw=('\\t'.join(cols)+'\\n').encode('utf-8')
+        raw=('\t'.join(cols)+'\n').encode('utf-8')
         buf=io.BytesIO()
         with zipfile.ZipFile(buf,'w',zipfile.ZIP_DEFLATED) as z:
             z.writestr('test.gkg.csv',raw)
