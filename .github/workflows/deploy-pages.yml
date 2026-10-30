@@ -1,0 +1,51 @@
+name: Publish PHEME to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pheme-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Test and deploy PHEME
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: Check out PHEME
+        uses: actions/checkout@v4
+
+      - name: Validate JavaScript
+        run: |
+          node --check app.js
+          node --check sw.js
+
+      - name: Stage static app
+        run: |
+          mkdir -p dist
+          cp index.html styles.css app.js sw.js icon.svg manifest.webmanifest dist/
+          touch dist/.nojekyll
+          test -s dist/index.html
+          test -s dist/styles.css
+          test -s dist/app.js
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload PHEME site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+      - name: Publish live edition
+        id: deployment
+        uses: actions/deploy-pages@v4
