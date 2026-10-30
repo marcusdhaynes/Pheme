@@ -72,7 +72,7 @@ def parse_gal_jsonl(blob, max_records=10000):
     except (OSError,EOFError,ValueError):return {}
     return result
 
-def download_recent_metadata(now=None,lookback=23,maximum_success=7):
+def download_recent_metadata(now=None,lookback=52,maximum_success=12):
     """Small bounded requests; sparse minute files (404) are expected."""
     now=(now or dt.datetime.now(dt.timezone.utc)).replace(second=0,microsecond=0)
     records={};stats={'checked':0,'success':0,'records':0,'errors':[]}
