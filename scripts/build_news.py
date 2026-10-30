@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PHEME evidence-aware news intake.
 
-Ingest GDELT DOC 2.0 (JSON) without API keys.
+Ingest GDELT GAL RSS and downloadable JSONL metadata without publisher article scraping.
 This is a discovery/attribution pipeline, NOT independent fact verification.
 Country names in searches are topic mentions; never assume event location.
 Political coverage is counted ONLY for outlets with manually evidenced mappings.
@@ -22,6 +22,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from gal_feed import fetch_gal
+from article_enrichment import download_recent_metadata,attach_metadata,enrich_event,canonical as metadata_canonical,english_heuristic
 
 ROOT = Path(__file__).resolve().parents[1]
 COUNTRIES = ROOT / "data/countries.json"
@@ -145,7 +146,10 @@ def event_id(title,existing):
 def publication_for(article):
     return dict(title=article["title"],name=article["publisher"],url=article["url"],
                 domain=article.get("domain",""),publishedAt=article["published"],api=article["api"],
-                countryMention=article["country"],countryMentions=article.get("countries",[article["country"]]))
+                countryMention=article["country"],countryMentions=article.get("countries",[article["country"]]),
+                lang=article.get("lang"),langSource=article.get("langSource"),
+                description=article.get("description",""),author=article.get("author",""),
+                image=article.get("image",""),logo=article.get("logo",""))
 
 def group_catalog(country, catalog):
     return catalog.get(country,[])
@@ -185,15 +189,24 @@ def make_event(article,group_catalogs):
         publications=[],updatedAt=article["published"],firstPublishedAt=article["published"],
         reviewStatus="unverified-headline-aggregation",revisions=[])
 
-def merge_articles(articles,old,groups,outlets,max_events=1400):
-    # Preserve original reports across runs. Never convert headlines into verified facts.
+def merge_articles(articles,old,groups,outlets,max_events=1400,metadata=None):
+    # Refresh metadata for old source URLs; do not turn claims into verified facts.
+    metadata=metadata or {}
     old_events=[v for v in old if isinstance(v,dict) and v.get("eventId")]
     cutoff=(NOW-dt.timedelta(days=7)).isoformat()
     result=[v for v in old_events if str(v.get("updatedAt") or "")>=cutoff]
     by_id={v["eventId"]:v for v in result}
     seen=set()
     for ev in result:
-        for pub in ev.get("publications",[]):seen.add(canonical_url(pub.get("url","")))
+        for pub in ev.get("publications",[]):
+            seen.add(canonical_url(pub.get("url","")))
+            m=metadata.get(metadata_canonical(pub.get("url",""))) or {}
+            if m:
+                for field in ('description','lang','author','image','logo'):
+                    if m.get(field):pub[field]=m[field]
+                if m.get('publisher'):pub['name']=m['publisher']
+            elif not pub.get('lang'):
+                pub['lang']=english_heuristic(pub.get('title',''))
     # Freshest observations first, so titles and sections reflect the latest reports.
     articles.sort(key=lambda a:a["published"],reverse=True)
     count=0
@@ -255,6 +268,7 @@ def merge_articles(articles,old,groups,outlets,max_events=1400):
         ev["locations"]=[]
         ev["parties"]=[]
         ev["unknowns"]=[{"text":"Independent verification of the event's underlying claims is not yet available in this edition."}]
+    for ev in result:enrich_event(ev)
     result.sort(key=lambda e:e.get("updatedAt",""),reverse=True)
     return result[:max_events],count
 
@@ -285,12 +299,14 @@ def main(argv=None):
     # Eight distinct three-hour slots each day, covering 194 non-US countries daily.
     slot=NOW.hour//3
     articles,selected,errors,counts=collect(countries,slot,args.all,args.offline)
-    events,added=merge_articles(articles,previous.get("events",[]),group_catalogs,outlets,max_events=args.max_events)
+    metadata,metadata_status=({},{"success":0,"checked":0,"records":0,"errors":[]}) if args.offline else download_recent_metadata()
+    articles=[attach_metadata(a,metadata) for a in articles]
+    events,added=merge_articles(articles,previous.get("events",[]),group_catalogs,outlets,max_events=args.max_events,metadata=metadata)
     diagnostic=dict(status=("ok" if articles else "no-matching-country-headlines") if counts["gal_ok"] else "no-provider-success",
         searchedCountries=len(selected),receivedArticles=len(articles),
-        addedPublications=added,providers=counts,errors=errors[:35],
+        addedPublications=added,providers=counts,metadata=metadata_status,errors=errors[:35],
         policy="Article headlines are attributed reports, not verified facts. Political affiliations require documented outlet mappings.",
-        note="GDELT GAL RSS monitored for a rolling 15-minute global article-list window; title mentions determine country-topic relevance across 194 countries. US deferred. This does not establish event location or verify an article claim.")
+        note="GDELT GAL RSS plus GAL JSON metadata. Descriptions are attributed reporting, not verified facts. Country names signal topic mentions, not confirmed event locations. US deferred.")
     write_json(OUTPUT,dict(updatedAt=NOW.isoformat(),events=events,diagnostics=diagnostic))
     log.info("Country catalog=%s source reports=%s new publications=%s events=%s provider results=%s",
              len(selected),len(articles),added,len(events),counts)
