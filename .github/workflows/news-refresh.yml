@@ -1,0 +1,67 @@
+name: Refresh PHEME global news
+
+on:
+  schedule:
+    - cron: '13 */3 * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build_news.py'
+      - 'scripts/test_news.py'
+      - 'data/**'
+      - '.github/workflows/news-refresh.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pheme-news-refresh
+  cancel-in-progress: false
+
+jobs:
+  intake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout PHEME
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate news collector and country coverage
+        run: python -m unittest discover -s scripts -p 'test_*.py' -v
+      - name: Check browser scripts
+        run: |
+          node --check app.js
+          node --check news-engine.js
+          node --check sw.js
+      - name: Fetch real source headlines (194-country rotation)
+        run: python scripts/build_news.py
+      - name: Validate feed structure
+        run: |
+          python - <<'PY'
+          import json
+          with open('news/stories.json',encoding='utf-8') as f:
+              data=json.load(f)
+          assert isinstance(data.get('events'),list)
+          assert isinstance(data.get('diagnostics'),dict)
+          assert data['diagnostics']['searchedCountries']>0
+          assert all(x.get('reviewStatus')=='unverified-headline-aggregation' for x in data['events'])
+          assert all(not x.get('facts') for x in data['events'])
+          print('Validated',len(data['events']),'attributed event clusters')
+          print('Source diagnostics:',data['diagnostics']['providers'])
+          PY
+      - name: Commit updated newspaper edition
+        run: |
+          git config user.name "pheme-news-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add news/stories.json
+          if git diff --cached --quiet; then
+            echo "No new news data"
+            exit 0
+          fi
+          git commit -m "news: refresh attributed global headlines"
+          git push
