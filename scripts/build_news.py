@@ -23,6 +23,7 @@ import urllib.parse
 import urllib.request
 from gal_feed import fetch_gal
 from article_enrichment import download_recent_metadata,attach_metadata,enrich_event,canonical as metadata_canonical,english_heuristic
+from gkg_enrichment import fetch_gkg,annotate_publications
 
 ROOT = Path(__file__).resolve().parents[1]
 COUNTRIES = ROOT / "data/countries.json"
@@ -149,7 +150,9 @@ def publication_for(article):
                 countryMention=article["country"],countryMentions=article.get("countries",[article["country"]]),
                 lang=article.get("lang"),langSource=article.get("langSource"),
                 description=article.get("description",""),author=article.get("author",""),
-                image=article.get("image",""),logo=article.get("logo",""))
+                image=article.get("image",""),logo=article.get("logo",""),
+                persons=article.get("persons",[]),organizations=article.get("organizations",[]),
+                places=article.get("places",[]),themes=article.get("themes",[]))
 
 def group_catalog(country, catalog):
     return catalog.get(country,[])
@@ -189,9 +192,10 @@ def make_event(article,group_catalogs):
         publications=[],updatedAt=article["published"],firstPublishedAt=article["published"],
         reviewStatus="unverified-headline-aggregation",revisions=[])
 
-def merge_articles(articles,old,groups,outlets,max_events=1400,metadata=None):
+def merge_articles(articles,old,groups,outlets,max_events=1400,metadata=None,gkg=None):
     # Refresh metadata for old source URLs; do not turn claims into verified facts.
     metadata=metadata or {}
+    gkg=gkg or {}
     old_events=[v for v in old if isinstance(v,dict) and v.get("eventId")]
     cutoff=(NOW-dt.timedelta(days=7)).isoformat()
     result=[v for v in old_events if str(v.get("updatedAt") or "")>=cutoff]
@@ -200,6 +204,7 @@ def merge_articles(articles,old,groups,outlets,max_events=1400,metadata=None):
     for ev in result:
         for pub in ev.get("publications",[]):
             seen.add(canonical_url(pub.get("url","")))
+            annotate_publications([pub],gkg)
             m=metadata.get(metadata_canonical(pub.get("url",""))) or {}
             if m:
                 for field in ('description','lang','author','image','logo'):
@@ -301,10 +306,16 @@ def main(argv=None):
     articles,selected,errors,counts=collect(countries,slot,args.all,args.offline)
     metadata,metadata_status=({},{"success":0,"checked":0,"records":0,"errors":[]}) if args.offline else download_recent_metadata()
     articles=[attach_metadata(a,metadata) for a in articles]
-    events,added=merge_articles(articles,previous.get("events",[]),group_catalogs,outlets,max_events=args.max_events,metadata=metadata)
+    needed={metadata_canonical(a.get('url','')) for a in articles}
+    for event in previous.get('events',[]):
+        needed.update(metadata_canonical(p.get('url','')) for p in event.get('publications',[]))
+    gkg,gkg_status=({},{"ok":0,"matches":0,"errors":[]}) if args.offline else fetch_gkg(needed)
+    annotate_publications(articles,gkg)
+    events,added=merge_articles(articles,previous.get("events",[]),group_catalogs,outlets,
+                               max_events=args.max_events,metadata=metadata,gkg=gkg)
     diagnostic=dict(status=("ok" if articles else "no-matching-country-headlines") if counts["gal_ok"] else "no-provider-success",
         searchedCountries=len(selected),receivedArticles=len(articles),
-        addedPublications=added,providers=counts,metadata=metadata_status,errors=errors[:35],
+        addedPublications=added,providers=counts,metadata=metadata_status,gkg=gkg_status,errors=errors[:35],
         policy="Article headlines are attributed reports, not verified facts. Political affiliations require documented outlet mappings.",
         note="GDELT GAL RSS plus GAL JSON metadata. Descriptions are attributed reporting, not verified facts. Country names signal topic mentions, not confirmed event locations. US deferred.")
     write_json(OUTPUT,dict(updatedAt=NOW.isoformat(),events=events,diagnostics=diagnostic))
