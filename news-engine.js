@@ -7,6 +7,19 @@
   const COUNTRIES = [{"name":"Algeria","continent":"Africa","region":"Northern Africa"},{"name":"Egypt","continent":"Africa","region":"Northern Africa"},{"name":"Libya","continent":"Africa","region":"Northern Africa"},{"name":"Morocco","continent":"Africa","region":"Northern Africa"},{"name":"Sudan","continent":"Africa","region":"Northern Africa"},{"name":"Tunisia","continent":"Africa","region":"Northern Africa"},{"name":"Benin","continent":"Africa","region":"Western Africa"},{"name":"Burkina Faso","continent":"Africa","region":"Western Africa"},{"name":"Cabo Verde","continent":"Africa","region":"Western Africa"},{"name":"Côte d’Ivoire","continent":"Africa","region":"Western Africa"},{"name":"Gambia","continent":"Africa","region":"Western Africa"},{"name":"Ghana","continent":"Africa","region":"Western Africa"},{"name":"Guinea","continent":"Africa","region":"Western Africa"},{"name":"Guinea-Bissau","continent":"Africa","region":"Western Africa"},{"name":"Liberia","continent":"Africa","region":"Western Africa"},{"name":"Mali","continent":"Africa","region":"Western Africa"},{"name":"Mauritania","continent":"Africa","region":"Western Africa"},{"name":"Niger","continent":"Africa","region":"Western Africa"},{"name":"Nigeria","continent":"Africa","region":"Western Africa"},{"name":"Senegal","continent":"Africa","region":"Western Africa"},{"name":"Sierra Leone","continent":"Africa","region":"Western Africa"},{"name":"Togo","continent":"Africa","region":"Western Africa"},{"name":"Angola","continent":"Africa","region":"Central Africa"},{"name":"Cameroon","continent":"Africa","region":"Central Africa"},{"name":"Central African Republic","continent":"Africa","region":"Central Africa"},{"name":"Chad","continent":"Africa","region":"Central Africa"},{"name":"Republic of the Congo","continent":"Africa","region":"Central Africa"},{"name":"Democratic Republic of the Congo","continent":"Africa","region":"Central Africa"},{"name":"Equatorial Guinea","continent":"Africa","region":"Central Africa"},{"name":"Gabon","continent":"Africa","region":"Central Africa"},{"name":"São Tomé and Príncipe","continent":"Africa","region":"Central Africa"},{"name":"Burundi","continent":"Africa","region":"Eastern Africa"},{"name":"Comoros","continent":"Africa","region":"Eastern Africa"},{"name":"Djibouti","continent":"Africa","region":"Eastern Africa"},{"name":"Eritrea","continent":"Africa","region":"Eastern Africa"},{"name":"Ethiopia","continent":"Africa","region":"Eastern Africa"},{"name":"Kenya","continent":"Africa","region":"Eastern Africa"},{"name":"Madagascar","continent":"Africa","region":"Eastern Africa"},{"name":"Malawi","continent":"Africa","region":"Eastern Africa"},{"name":"Mauritius","continent":"Africa","region":"Eastern Africa"},{"name":"Mozambique","continent":"Africa","region":"Eastern Africa"},{"name":"Rwanda","continent":"Africa","region":"Eastern Africa"},{"name":"Seychelles","continent":"Africa","region":"Eastern Africa"},{"name":"Somalia","continent":"Africa","region":"Eastern Africa"},{"name":"South Sudan","continent":"Africa","region":"Eastern Africa"},{"name":"Tanzania","continent":"Africa","region":"Eastern Africa"},{"name":"Uganda","continent":"Africa","region":"Eastern Africa"},{"name":"Zambia","continent":"Africa","region":"Eastern Africa"},{"name":"Zimbabwe","continent":"Africa","region":"Eastern Africa"},{"name":"Botswana","continent":"Africa","region":"Southern Africa"},{"name":"Eswatini","continent":"Africa","region":"Southern Africa"},{"name":"Lesotho","continent":"Africa","region":"Southern Africa"},{"name":"Namibia","continent":"Africa","region":"Southern Africa"},{"name":"South Africa","continent":"Africa","region":"Southern Africa"},{"name":"Kazakhstan","continent":"Asia","region":"Central Asia"},{"name":"Kyrgyzstan","continent":"Asia","region":"Central Asia"},{"name":"Tajikistan","continent":"Asia","region":"Central Asia"},{"name":"Turkmenistan","continent":"Asia","region":"Central Asia"},{"name":"Uzbekistan","continent":"Asia","region":"Central Asia"},{"name":"China","continent":"Asia","region":"Eastern Asia"},{"name":"Japan","continent":"Asia","region":"Eastern Asia"},{"name":"Mongolia","continent":"Asia","region":"Eastern Asia"},{"name":"North Korea","continent":"Asia","region":"Eastern Asia"},{"name":"South Korea","continent":"Asia","region":"Eastern Asia"},{"name":"Brunei","continent":"Asia","region":"Southeastern Asia"},{"name":"Cambodia","continent":"Asia","region":"Southeastern Asia"},{"name":"Indonesia","continent":"Asia","region":"Southeastern Asia"},{"name":"Laos","continent":"Asia","region":"Southeastern Asia"},{"name":"Malaysia","continent":"Asia","region":"Southeastern Asia"},{"name":"Myanmar","continent":"Asia","region":"Southeastern Asia"},{"name":"Philippines","continent":"Asia","region":"Southeastern Asia"},{"name":"Singapore","continent":"Asia","region":"Southeastern Asia"},{"name":"Thailand","continent":"Asia","region":"Southeastern Asia"},{"name":"Timor-Leste","continent":"Asia","region":"Southeastern Asia"},{"name":"Vietnam","continent":"Asia","region":"Southeastern Asia"},{"name":"Afghanistan","continent":"Asia","region":"Southern Asia"},{"name":"Bangladesh","continent":"Asia","region":"Southern Asia"},{"name":"Bhutan","continent":"Asia","region":"Southern Asia"},{"name":"India","continent":"Asia","region":"Southern Asia"},{"name":"Iran","continent":"Asia","region":"Southern Asia"},{"name":"Maldives","continent":"Asia","region":"Southern Asia"},{"name":"Nepal","continent":"Asia","region":"Southern Asia"},{"name":"Pakistan","continent":"Asia","region":"Southern Asia"},{"name":"Sri Lanka","continent":"Asia","region":"Southern Asia"},{"name":"Armenia","continent":"Asia","region":"Western Asia"},{"name":"Azerbaijan","continent":"Asia","region":"Western Asia"},{"name":"Bahrain","continent":"Asia","region":"Western Asia"},{"name":"Cyprus","continent":"Asia","region":"Western Asia"},{"name":"Georgia","continent":"Asia","region":"Western Asia"},{"name":"Iraq","continent":"Asia","region":"Western Asia"},{"name":"Israel","continent":"Asia","region":"Western Asia"},{"name":"Jordan","continent":"Asia","region":"Western Asia"},{"name":"Kuwait","continent":"Asia","region":"Western Asia"},{"name":"Lebanon","continent":"Asia","region":"Western Asia"},{"name":"Oman","continent":"Asia","region":"Western Asia"},{"name":"Palestine","continent":"Asia","region":"Western Asia"},{"name":"Qatar","continent":"Asia","region":"Western Asia"},{"name":"Saudi Arabia","continent":"Asia","region":"Western Asia"},{"name":"Syria","continent":"Asia","region":"Western Asia"},{"name":"Türkiye","continent":"Asia","region":"Western Asia"},{"name":"United Arab Emirates","continent":"Asia","region":"Western Asia"},{"name":"Yemen","continent":"Asia","region":"Western Asia"},{"name":"Denmark","continent":"Europe","region":"Northern Europe"},{"name":"Estonia","continent":"Europe","region":"Northern Europe"},{"name":"Finland","continent":"Europe","region":"Northern Europe"},{"name":"Iceland","continent":"Europe","region":"Northern Europe"},{"name":"Ireland","continent":"Europe","region":"Northern Europe"},{"name":"Latvia","continent":"Europe","region":"Northern Europe"},{"name":"Lithuania","continent":"Europe","region":"Northern Europe"},{"name":"Norway","continent":"Europe","region":"Northern Europe"},{"name":"Sweden","continent":"Europe","region":"Northern Europe"},{"name":"United Kingdom","continent":"Europe","region":"Northern Europe"},{"name":"Austria","continent":"Europe","region":"Western Europe"},{"name":"Belgium","continent":"Europe","region":"Western Europe"},{"name":"France","continent":"Europe","region":"Western Europe"},{"name":"Germany","continent":"Europe","region":"Western Europe"},{"name":"Liechtenstein","continent":"Europe","region":"Western Europe"},{"name":"Luxembourg","continent":"Europe","region":"Western Europe"},{"name":"Monaco","continent":"Europe","region":"Western Europe"},{"name":"Netherlands","continent":"Europe","region":"Western Europe"},{"name":"Switzerland","continent":"Europe","region":"Western Europe"},{"name":"Belarus","continent":"Europe","region":"Eastern Europe"},{"name":"Bulgaria","continent":"Europe","region":"Eastern Europe"},{"name":"Czechia","continent":"Europe","region":"Eastern Europe"},{"name":"Hungary","continent":"Europe","region":"Eastern Europe"},{"name":"Moldova","continent":"Europe","region":"Eastern Europe"},{"name":"Poland","continent":"Europe","region":"Eastern Europe"},{"name":"Romania","continent":"Europe","region":"Eastern Europe"},{"name":"Russia","continent":"Europe","region":"Eastern Europe"},{"name":"Slovakia","continent":"Europe","region":"Eastern Europe"},{"name":"Ukraine","continent":"Europe","region":"Eastern Europe"},{"name":"Albania","continent":"Europe","region":"Southern Europe"},{"name":"Andorra","continent":"Europe","region":"Southern Europe"},{"name":"Bosnia and Herzegovina","continent":"Europe","region":"Southern Europe"},{"name":"Croatia","continent":"Europe","region":"Southern Europe"},{"name":"Greece","continent":"Europe","region":"Southern Europe"},{"name":"Vatican City","continent":"Europe","region":"Southern Europe"},{"name":"Italy","continent":"Europe","region":"Southern Europe"},{"name":"Malta","continent":"Europe","region":"Southern Europe"},{"name":"Montenegro","continent":"Europe","region":"Southern Europe"},{"name":"North Macedonia","continent":"Europe","region":"Southern Europe"},{"name":"Portugal","continent":"Europe","region":"Southern Europe"},{"name":"San Marino","continent":"Europe","region":"Southern Europe"},{"name":"Serbia","continent":"Europe","region":"Southern Europe"},{"name":"Slovenia","continent":"Europe","region":"Southern Europe"},{"name":"Spain","continent":"Europe","region":"Southern Europe"},{"name":"Canada","continent":"North America","region":"Northern America"},{"name":"United States","continent":"North America","region":"Northern America"},{"name":"Mexico","continent":"North America","region":"Northern America"},{"name":"Belize","continent":"North America","region":"Central America"},{"name":"Costa Rica","continent":"North America","region":"Central America"},{"name":"El Salvador","continent":"North America","region":"Central America"},{"name":"Guatemala","continent":"North America","region":"Central America"},{"name":"Honduras","continent":"North America","region":"Central America"},{"name":"Nicaragua","continent":"North America","region":"Central America"},{"name":"Panama","continent":"North America","region":"Central America"},{"name":"Antigua and Barbuda","continent":"North America","region":"Caribbean"},{"name":"Bahamas","continent":"North America","region":"Caribbean"},{"name":"Barbados","continent":"North America","region":"Caribbean"},{"name":"Cuba","continent":"North America","region":"Caribbean"},{"name":"Dominica","continent":"North America","region":"Caribbean"},{"name":"Dominican Republic","continent":"North America","region":"Caribbean"},{"name":"Grenada","continent":"North America","region":"Caribbean"},{"name":"Haiti","continent":"North America","region":"Caribbean"},{"name":"Jamaica","continent":"North America","region":"Caribbean"},{"name":"Saint Kitts and Nevis","continent":"North America","region":"Caribbean"},{"name":"Saint Lucia","continent":"North America","region":"Caribbean"},{"name":"Saint Vincent and the Grenadines","continent":"North America","region":"Caribbean"},{"name":"Trinidad and Tobago","continent":"North America","region":"Caribbean"},{"name":"Colombia","continent":"South America","region":"Northern South America"},{"name":"Guyana","continent":"South America","region":"Northern South America"},{"name":"Suriname","continent":"South America","region":"Northern South America"},{"name":"Venezuela","continent":"South America","region":"Northern South America"},{"name":"Bolivia","continent":"South America","region":"Andean South America"},{"name":"Ecuador","continent":"South America","region":"Andean South America"},{"name":"Peru","continent":"South America","region":"Andean South America"},{"name":"Argentina","continent":"South America","region":"Southern Cone"},{"name":"Chile","continent":"South America","region":"Southern Cone"},{"name":"Paraguay","continent":"South America","region":"Southern Cone"},{"name":"Uruguay","continent":"South America","region":"Southern Cone"},{"name":"Brazil","continent":"South America","region":"Eastern South America"},{"name":"Australia","continent":"Oceania","region":"Australia and New Zealand"},{"name":"New Zealand","continent":"Oceania","region":"Australia and New Zealand"},{"name":"Fiji","continent":"Oceania","region":"Melanesia"},{"name":"Papua New Guinea","continent":"Oceania","region":"Melanesia"},{"name":"Solomon Islands","continent":"Oceania","region":"Melanesia"},{"name":"Vanuatu","continent":"Oceania","region":"Melanesia"},{"name":"Kiribati","continent":"Oceania","region":"Micronesia"},{"name":"Marshall Islands","continent":"Oceania","region":"Micronesia"},{"name":"Federated States of Micronesia","continent":"Oceania","region":"Micronesia"},{"name":"Nauru","continent":"Oceania","region":"Micronesia"},{"name":"Palau","continent":"Oceania","region":"Micronesia"},{"name":"Samoa","continent":"Oceania","region":"Polynesia"},{"name":"Tonga","continent":"Oceania","region":"Polynesia"},{"name":"Tuvalu","continent":"Oceania","region":"Polynesia"}];
   const LEVELS = ['moderate','mainstream','hardline'];
   const KEY = 'pheme.selectedCountries';
+  const LANGS = {en:'English',es:'Español',fr:'Français',de:'Deutsch',pt:'Português',it:'Italiano',ar:'العربية',hi:'हिन्दी',id:'Bahasa Indonesia',zh:'中文',ja:'日本語',ko:'한국어',ru:'Русский',tr:'Türkçe',nl:'Nederlands',sv:'Svenska',pl:'Polski',uk:'Українська',bn:'বাংলা',ur:'اردو',th:'ไทย',vi:'Tiếng Việt',ms:'Bahasa Melayu',fa:'فارسی'};
+  const LANGUAGE_KEY='pheme.articleLanguage';
+  let articleLanguage=(function(){try{const val=JSON.parse(localStorage.getItem(LANGUAGE_KEY));return LANGS[val]?val:'en';}catch(_){return 'en';}})();
+  function publicationLanguage(p){return p && p.lang || null;}
+  function languagePublications(story){return story.publications.filter(p=>publicationLanguage(p)===articleLanguage);}
+  function selectedTitle(story){const p=languagePublications(story)[0];return p && p.title || story.title.replace(/^Reports:\s*/,'');}
+  function selectedSummary(story){
+    const p=languagePublications(story).find(p=>p.description);
+    return p?p.description:'No publisher description is available in this language. Open the source for additional reporting.';
+  }
+  function firstImage(story){return languagePublications(story).find(p=>p.image && urlSafe(p.image));}
+  function textSource(p){return p.name || p.domain || 'Publisher';}
+
   const SECTIONS = ['World','Politics','Business','Technology','Science','Health','Sports','Entertainment','Culture','Environment','Education','Crime & Justice','Travel'];
   const SECTION_KEY = 'pheme.enabledSections';
   const OVERRIDE_KEY = 'pheme.sectionAssignments';
@@ -66,6 +79,8 @@
       section: SECTIONS.includes(story.section)?story.section:'World',
       reviewStatus: String(story.reviewStatus || ''),
       headlineVariantCount: Number(story.headlineVariantCount || 0),
+      reportedClaims: Array.isArray(story.reportedClaims)?story.reportedClaims:[],
+      availableLanguages: Array.isArray(story.availableLanguages)?story.availableLanguages:[],
       revisions: Array.isArray(story.revisions)?story.revisions:[],
       countries: uniqueStrings(story.countries).filter(x => supported.has(x)),
       groups: Array.isArray(story.groups) ? story.groups : [],
@@ -88,7 +103,7 @@
       if (!story) return;
       if (!output.has(story.id)) { output.set(story.id, story); return; }
       const old = output.get(story.id);
-      ['countries','facts','doubts','unknowns','parties','locations','agendas','impacts','publications']
+      ['countries','facts','doubts','unknowns','parties','locations','agendas','impacts','reportedClaims','publications']
         .forEach(key => { old[key] = uniqueStrings(old[key].concat(story[key])); });
       const groupIndex = new Map();
       old.groups.concat(story.groups).forEach(g => { if (g && (g.id || g.name)) groupIndex.set(String(g.id || g.name), g); });
@@ -147,6 +162,24 @@
   document.getElementById('pheme-sections-all').addEventListener('click',()=>{enabledSections=new Set(SECTIONS);persistSections();renderSectionSettings();renderSectionMenu();renderEdition();});
   document.getElementById('pheme-sections-none').addEventListener('click',()=>{enabledSections.clear();persistSections();renderSectionSettings();renderSectionMenu();renderEdition();});
   renderSectionSettings();renderSectionMenu();
+  const languageBox=el('section','pheme-language-setting');
+  const languageHeading=el('h3',null,'Article language');
+  const languageDesc=el('p','setting-caption','Default is English. Other selections show publications written in the selected language; unlicensed automatic translation is not claimed.');
+  const languageSelect=el('select','pheme-language-select');
+  languageSelect.id='pheme-language-select';
+  languageSelect.setAttribute('aria-label','Article language');
+  Object.entries(LANGS).forEach(([code,name])=>{
+    const opt=el('option',null,name);opt.value=code;opt.selected=articleLanguage===code;languageSelect.appendChild(opt);
+  });
+  languageSelect.addEventListener('change',()=>{
+    articleLanguage=languageSelect.value;
+    try{localStorage.setItem(LANGUAGE_KEY,JSON.stringify(articleLanguage));}catch(_){}
+    document.documentElement.lang=articleLanguage;
+    renderEdition();
+  });
+  languageBox.append(languageHeading,languageDesc,languageSelect);
+  panel.querySelector('.settings-head').after(languageBox);
+  document.documentElement.lang=articleLanguage;
   const countryBox = el('section','pheme-countries');
   countryBox.innerHTML =
     '<div class="pheme-country-head"><h3>Countries in your edition</h3><span id="pheme-country-count"></span></div>' +
@@ -200,20 +233,41 @@
     });
     return slots.size;
   }
-  function storyCard(story,lead) {
-    const article = el('article',lead?'pheme-story-card pheme-feature':'pheme-story-card');
-    const section = el('div','section-label',sectionOf(story).toUpperCase()+' · '+(story.countries.join(' · ')||'WORLD'));
-    const heading = el(lead?'h2':'h3',lead?'lead-title':'side-title',story.title);
-    const copy = el('p','pheme-card-copy',story.summary || 'Open this story to inspect the available evidence.');
-    const covered = coverageCount(story);
-    const variants=story.headlineVariantCount || new Set(story.publications.map(p=>String(p.title||'').trim().toLowerCase())).size;
-    const info = el('p','pheme-card-metadata',covered+' sourced political slots · '+story.publications.length+' linked publications · '+variants+' headline variants'+(story.reviewStatus==='unverified-headline-aggregation'?' · Not independently fact-checked':''));
+  function storyCard(story,lead,brief) {
+    const pubs=languagePublications(story);
+    const article=el('article',lead?'pheme-story-card pheme-feature':brief?'pheme-story-card pheme-brief':'pheme-story-card pheme-side');
+    article.classList.add('pheme-ink-card');
+    const section=el('div','section-label',sectionOf(story).toUpperCase()+' · '+story.countries.join(' · '));
+    const title=selectedTitle(story);
+    const heading=el(lead?'h2':brief?'h3':'h3',lead?'lead-title':brief?'pheme-brief-title':'side-title',title);
+    const imagePub=firstImage(story);
+    article.append(section,heading);
+    if(imagePub && (lead || !brief)){
+      const figure=el('figure','pheme-report-figure');
+      const img=el('img');
+      img.src=imagePub.image;img.alt='Source publication illustration for '+title;
+      img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';
+      img.onerror=()=>figure.remove();
+      figure.appendChild(img);
+      figure.appendChild(el('figcaption',null,'IMAGE: '+textSource(imagePub)));
+      article.appendChild(figure);
+    }
+    const description=selectedSummary(story);
+    article.appendChild(el('p','pheme-card-copy',description));
+    if(lead){
+      const claims=story.reportedClaims.filter(c=>c.language===articleLanguage);
+      const details=el('div','pheme-lead-excerpts');
+      claims.slice(1,3).forEach(c=>details.appendChild(el('p',null,c.text)));
+      if(details.childElementCount)article.appendChild(details);
+    }
+    const info=el('p','pheme-card-metadata',
+      pubs.length+' '+(pubs.length===1?'publication':'publications')+' · '+coverageCount(story)+' documented perspective slots · Reports not independently verified');
     const actions=el('div','story-footer');
-    const read=el('button','read-link','Read report ↗'); read.type='button'; read.addEventListener('click',()=>openStory(story));
-    actions.appendChild(read);
+    const read=el('button','read-link','READ FULL REPORT');
+    read.type='button';read.addEventListener('click',()=>openStory(story));actions.appendChild(read);
     const saved=bookmarkIds().includes(story.id);
     const mark=el('button','bookmark-button',saved?'★':'☆');
-    mark.type='button';mark.setAttribute('aria-label',(saved?'Remove bookmark':'Bookmark story')+': '+story.title);
+    mark.type='button';mark.setAttribute('aria-label',(saved?'Remove bookmark':'Bookmark story')+': '+title);
     mark.setAttribute('aria-pressed',String(saved));
     mark.addEventListener('click',()=>{
       let ids=bookmarkIds();
@@ -221,11 +275,18 @@
       try{localStorage.setItem('pheme.newsBookmarks',JSON.stringify(ids));}catch(_){}
       renderEdition();
     });
-    actions.appendChild(mark);
-    article.append(section,heading,copy,info,actions);
+    actions.appendChild(mark);article.append(info,actions);
     return article;
   }
-  function addSection(container,title,items) {
+  function newspaperPlaceholder(title,copy,lead=false) {
+    const card=el('article',lead?'pheme-story-card pheme-feature pheme-placeholder':'pheme-story-card pheme-side pheme-placeholder');
+    card.appendChild(el('div','section-label','PHEME · YOUR PERSONAL EDITION'));
+    card.appendChild(el(lead?'h2':'h3',lead?'lead-title':'side-title',title));
+    card.appendChild(el('div','pheme-placeholder-ornament','✦  ❦  ✦'));
+    card.appendChild(el('p','pheme-card-copy',copy));
+    return card;
+  }
+    function addSection(container,title,items) {
     const section=el('section','pheme-evidence-section');
     section.appendChild(el('h3',null,title));
     const vals = uniqueStrings(items);
@@ -355,7 +416,7 @@
   // The prior cinema mock edition and its navigation are intentionally retired.
   const oldSections=document.getElementById('sections-button');
   const oldArchive=document.getElementById('archive-button');
-  if(oldSections)oldSections.hidden=true;
+  if(oldSections)oldSections.hidden=false;
   if(oldArchive)oldArchive.hidden=true;
   const colophon=document.querySelector('.dialog-colophon');
   if(colophon)colophon.textContent='PHEME · EVIDENCE-BASED NEWS · ORIGINAL SOURCES CITED';
