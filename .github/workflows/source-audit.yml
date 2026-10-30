@@ -1,0 +1,42 @@
+name: Verify PHEME news source API
+
+on:
+  push:
+    paths:
+      - '.github/workflows/source-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-probe:
+    name: Validate GDELT live response
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Probe GDELT DOC 2.0 API with a real one-country query
+        run: |
+          PYTHONPATH=scripts python - <<'PY'
+          import json
+          import urllib.error
+          import build_news
+          print('Endpoint: https://api.gdeltproject.org/api/v2/doc/doc')
+          try:
+              items=build_news.gdelt_json('Canada')
+              print('Valid JSON parsed; matching articles:',len(items))
+              if not items:
+                  raise RuntimeError('GDELT returned zero articles for Canada in 24h')
+              assert all(x.get('url','').startswith('http') for x in items)
+              assert all(x.get('title') for x in items)
+              assert all(x.get('published') and x.get('api') == 'GDELT DOC 2.0' for x in items)
+              print('Sample:',json.dumps({'title':items[0]['title'],'domain':items[0]['domain'],'published':items[0]['published']},ensure_ascii=False))
+              print('Source probe PASSED')
+          except Exception as exc:
+              print('Source probe FAILED:',type(exc).__name__,str(exc)[:500])
+              raise
+          PY
