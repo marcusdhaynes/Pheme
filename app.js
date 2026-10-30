@@ -163,6 +163,7 @@
   }
 
   function applyFilters() {
+    if (window.PHEME_NEWS) { window.PHEME_NEWS.applyFilters(); return; }
     var q = searchInput.value.trim().toLowerCase();
     var count = 0;
     $$('[data-story]').forEach(function (card) {
@@ -234,12 +235,14 @@
     $('#menu-toggle').setAttribute('aria-expanded', String(open));
   });
   $('#today-link').addEventListener('click', function () {
+    if (window.PHEME_NEWS) window.PHEME_NEWS.showAll();
     activeBookmarksOnly = false;
     applyFilters();
     hideNav();
   });
   $('#bookmarks-button').addEventListener('click', function () {
     hideNav();
+    if (window.PHEME_NEWS) { window.PHEME_NEWS.toggleBookmarks(); return; }
     if (!bookmarks.length && !activeBookmarksOnly) { toast('Bookmark a story to save it here.'); return; }
     activeBookmarksOnly = !activeBookmarksOnly;
     $('#bookmarks-button').classList.toggle('nav-active', activeBookmarksOnly);
