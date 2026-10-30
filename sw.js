@@ -1,6 +1,6 @@
 /* PHEME service worker — fast repeat visits and offline reading */
-const VERSION = 'pheme-edition-1';
-const PRECACHE = ['./', './index.html', './styles.css', './app.js', './icon.svg', './manifest.webmanifest'];
+const VERSION = 'pheme-edition-2';
+const PRECACHE = ['./', './index.html', './styles.css', './app.js', './news-engine.js', './news/stories.json', './icon.svg', './manifest.webmanifest'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(VERSION).then(cache => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));
 });
@@ -17,6 +17,15 @@ self.addEventListener('fetch', event => {
       }
       return response;
     }).catch(() => caches.match('./index.html')));
+    return;
+  }
+  // A news feed must be checked for updates on every visit, never held static indefinitely.
+  const isFeed = new URL(event.request.url).pathname.endsWith('/news/stories.json');
+  if (isFeed) {
+    event.respondWith(fetch(event.request).then(response => {
+      if (response.ok) caches.open(VERSION).then(cache => cache.put(event.request, response.clone()));
+      return response;
+    }).catch(() => caches.match(event.request)));
     return;
   }
   event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
