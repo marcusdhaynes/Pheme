@@ -2,7 +2,7 @@ name: Refresh PHEME global news
 
 on:
   schedule:
-    - cron: '13 */3 * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
   push:
     paths:
@@ -38,7 +38,7 @@ jobs:
           node --check app.js
           node --check news-engine.js
           node --check sw.js
-      - name: Fetch GDELT article listings (194-country rotation)
+      - name: Fetch live GDELT GAL RSS headlines (194-country topic catalog)
         run: python scripts/build_news.py
       - name: Validate feed structure
         run: |
