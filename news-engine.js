@@ -194,7 +194,7 @@
     // A mark exists only when a source URL is attached to the political perspective.
     const slots = new Set();
     story.coverage.forEach(c=>{
-      if (!c || !LEVELS.includes(String(c.level||'').toLowerCase()) || !(c.sources||[]).some(s=>urlSafe(typeof s==='string'?s:s && s.url))) return;
+      if (!c || !LEVELS.includes(String(c.level||'').toLowerCase()) || !urlSafe(c.evidenceUrl) || !(c.sources||[]).some(s=>urlSafe(typeof s==='string'?s:s && s.url))) return;
       slots.add([c.country,c.groupId||c.group,String(c.level).toLowerCase()].join('::'));
     });
     return slots.size;
@@ -245,19 +245,29 @@
   function renderCoverage(container,story) {
     const section=el('section','pheme-evidence-section');
     section.appendChild(el('h3',null,'Political coverage'));
-    const groups = new Map();
-    story.groups.forEach(g=>{ if (g && (g.id || g.name)) groups.set(String(g.id || g.name),String(g.name || g.id)); });
-    story.coverage.forEach(c=>{ if (c && (c.groupId || c.group)) { const id=String(c.groupId || c.group);if(!groups.has(id))groups.set(id,id); } });
-    if (!groups.size) section.appendChild(el('p','pheme-no-evidence','No verified political-perspective source mapping available.'));
+    const groups=new Map();
+    story.groups.forEach(g=>{
+      if(!g || !(g.id || g.name))return;
+      const country=String(g.country || story.countries[0] || '');
+      const id=String(g.id || g.name);
+      groups.set(country+'::'+id,{country,id,name:String(g.name || g.id)});
+    });
+    story.coverage.forEach(c=>{
+      if(!c || !(c.groupId || c.group))return;
+      const country=String(c.country || story.countries[0] || '');
+      const id=String(c.groupId || c.group);
+      if(!groups.has(country+'::'+id))groups.set(country+'::'+id,{country,id,name:id});
+    });
+    if(!groups.size)section.appendChild(el('p','pheme-no-evidence','No verified political-group source mapping available.'));
     const wrap=el('div','pheme-coverage-grid');
-    groups.forEach((name,id)=>{
+    groups.forEach(groupInfo=>{
       const group=el('div','pheme-coverage-group');
-      group.appendChild(el('h4',null,name));
+      group.appendChild(el('h4',null,groupInfo.name+' · '+groupInfo.country));
       LEVELS.forEach(level=>{
-        const matched=story.coverage.filter(c => c && String(c.groupId || c.group)===id && String(c.level).toLowerCase()===level);
-        const urls=uniqueStrings(matched.flatMap(c=>c.sources||[])).map(s=>typeof s==='string'?s:s && s.url).filter(urlSafe);
-        const row=el('div','pheme-coverage-level',(urls.length?'✓ ':'○ ')+level[0].toUpperCase()+level.slice(1)+' · '+urls.length+' source'+(urls.length===1?'':'s'));
-        group.appendChild(row);
+        const matched=story.coverage.filter(c=>c && String(c.country||story.countries[0]||'')===groupInfo.country
+          && String(c.groupId||c.group)===groupInfo.id && String(c.level).toLowerCase()===level && urlSafe(c.evidenceUrl));
+        const urls=uniqueStrings(matched.flatMap(c=>c.sources||[])).map(s=>typeof s==='string'?s:s&&s.url).filter(urlSafe);
+        group.appendChild(el('div','pheme-coverage-level',(urls.length?'✓ ':'○ ')+level[0].toUpperCase()+level.slice(1)+' · '+urls.length+' source'+(urls.length===1?'':'s')));
       });
       wrap.appendChild(group);
     });
