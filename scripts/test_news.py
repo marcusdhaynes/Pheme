@@ -112,5 +112,27 @@ class NewsTests(unittest.TestCase):
         self.assertIsNone(norm_lang('unrecognized'))
         self.assertEqual(safe_web_url('javascript:alert(1)'),'')
 
+
+    def test_gkg_machine_mentions(self):
+        import zipfile,io
+        from gkg_enrichment import parse_gkg,annotate_publications
+        cols=['']*27
+        cols[4]='https://example.org/report'
+        cols[7]='EPU_POLICY;GENERAL_HEALTH'
+        cols[9]='1#Paris, France#FR#'
+        cols[11]='Jane Smith;Alex Jones'
+        cols[13]='World Health Organization;Local Council'
+        raw=('\\t'.join(cols)+'\\n').encode('utf-8')
+        buf=io.BytesIO()
+        with zipfile.ZipFile(buf,'w',zipfile.ZIP_DEFLATED) as z:
+            z.writestr('test.gkg.csv',raw)
+        result=parse_gkg(buf.getvalue(),needed={'example.org/report'})
+        self.assertIn('example.org/report',result)
+        self.assertIn('Jane Smith',result['example.org/report']['persons'])
+        self.assertIn('Paris, France',result['example.org/report']['places'])
+        p=[{'url':'https://example.org/report'}]
+        annotate_publications(p,result)
+        self.assertEqual(p[0]['organizations'][0],'World Health Organization')
+
 if __name__=="__main__":
     unittest.main()
