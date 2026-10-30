@@ -65,6 +65,7 @@
       summary: String(story.summary || ''),
       section: SECTIONS.includes(story.section)?story.section:'World',
       reviewStatus: String(story.reviewStatus || ''),
+      headlineVariantCount: Number(story.headlineVariantCount || 0),
       revisions: Array.isArray(story.revisions)?story.revisions:[],
       countries: uniqueStrings(story.countries).filter(x => supported.has(x)),
       groups: Array.isArray(story.groups) ? story.groups : [],
@@ -205,7 +206,8 @@
     const heading = el(lead?'h2':'h3',lead?'lead-title':'side-title',story.title);
     const copy = el('p','pheme-card-copy',story.summary || 'Open this story to inspect the available evidence.');
     const covered = coverageCount(story);
-    const info = el('p','pheme-card-metadata',covered+' sourced political slots · '+story.publications.length+' publications'+(story.reviewStatus==='unverified-headline-aggregation'?' · Not independently fact-checked':''));
+    const variants=story.headlineVariantCount || new Set(story.publications.map(p=>String(p.title||'').trim().toLowerCase())).size;
+    const info = el('p','pheme-card-metadata',covered+' sourced political slots · '+story.publications.length+' linked publications · '+variants+' headline variants'+(story.reviewStatus==='unverified-headline-aggregation'?' · Not independently fact-checked':''));
     const actions=el('div','story-footer');
     const read=el('button','read-link','Read report ↗'); read.type='button'; read.addEventListener('click',()=>openStory(story));
     actions.appendChild(read);
@@ -298,7 +300,11 @@
     addSection(body,'Agendas',story.agendas);
     addSection(body,'Impacts',story.impacts);
     renderCoverage(body,story);
-    addSection(body,'Source publications',story.publications.map(p=>({text:(p.title||p.name||p.url||'Source'),sources:[{url:p.url,name:'Open original'}]})));
+    addSection(body,'Source publications',story.publications.map(p=>({text:(p.title||p.name||p.url||'Source')+' — '+(p.name||p.domain||'Publisher'),sources:[{url:p.url,name:'Open original'}]})));
+    if(story.revisions.length)addSection(body,'Source update history',story.revisions.map(r=>({
+      text:(r.at ? new Date(r.at).toLocaleString()+' · ' : '')+(r.text||'New source recorded')+' '+(r.title||''),
+      sources:r.url?[{url:r.url,name:'Publication'}]:[]
+    })));
     if(!dialog.open)dialog.showModal();
   }
   function bookmarkIds() {
