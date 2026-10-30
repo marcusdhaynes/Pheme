@@ -19,6 +19,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Parse live GAL RSS into PHEME country-matched publications
+        run: |
+          PYTHONPATH=scripts python - <<'PY'
+          import build_news
+          from gal_feed import fetch_gal
+          countries=build_news.read_json(build_news.COUNTRIES,[])
+          articles,scanned=fetch_gal(countries,limit=120)
+          print("Articles scanned from GDELT GAL feed:",scanned)
+          print("Country-topic matched publications:",len(articles))
+          print("Countries matched:",sorted({c for a in articles for c in a["countries"]})[:40])
+          if articles:
+              first=articles[0]
+              print("Sample title:",first["title"])
+              print("Source URL:",first["url"])
+              print("Matched countries:",first["countries"])
+          assert scanned>0, "GAL RSS feed has no items"
+          assert articles, "No headlines mention countries in 15-minute window"
+          assert all(a["api"]=="GDELT GAL RSS" and a["url"].startswith("http") for a in articles)
+          PY
       - name: Probe GDELT raw GAL RSS and DOC JSON
         run: |
           PYTHONPATH=scripts python - <<'PY'
