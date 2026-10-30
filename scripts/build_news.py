@@ -21,6 +21,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from gal_feed import fetch_gal
 
 ROOT = Path(__file__).resolve().parents[1]
 COUNTRIES = ROOT / "data/countries.json"
@@ -144,7 +145,7 @@ def event_id(title,existing):
 def publication_for(article):
     return dict(title=article["title"],name=article["publisher"],url=article["url"],
                 domain=article.get("domain",""),publishedAt=article["published"],api=article["api"],
-                countryMention=article["country"])
+                countryMention=article["country"],countryMentions=article.get("countries",[article["country"]]))
 
 def group_catalog(country, catalog):
     return catalog.get(country,[])
@@ -176,7 +177,7 @@ def make_event(article,group_catalogs):
     country=article["country"]
     return dict(eventId=event_id(title,[]),title="Reports: "+title,reportHeadline=title,
         summary="News organizations have published reports about this event. PHEME has not independently verified the underlying claims.",
-        section=section_for(title),countries=[country],
+        section=section_for(title),countries=list(article.get("countries",[country])),
         groups=[dict(g,country=country) for g in group_catalog(country,group_catalogs)],
         coverage=[],facts=[],doubts=[],
         unknowns=[{"text":"The underlying claims have not been independently verified by PHEME; consult the original reporting."}],
@@ -209,7 +210,8 @@ def merge_articles(articles,old,groups,outlets,max_events=1400):
             ev=make_event(article,groups)
             ev["eventId"]=key
             result.append(ev);by_id[key]=ev
-        if article["country"] not in ev["countries"]:ev["countries"].append(article["country"])
+        for country in article.get("countries",[article["country"]]):
+            if country not in ev["countries"]:ev["countries"].append(country)
         existing_groups={(g.get("country"),g.get("id")) for g in ev["groups"]}
         for country in ev["countries"]:
             for g in group_catalog(country,groups):
@@ -239,32 +241,14 @@ def merge_articles(articles,old,groups,outlets,max_events=1400):
     return result[:max_events],count
 
 def collect(countries,slot,all_countries=False,disable_network=False,max_workers=4):
-    selected=[c["name"] for i,c in enumerate(countries) if c["name"]!="United States" and
-              (all_countries or i%8==slot)]
-    if disable_network:return [],selected,[],{"gdelt_ok":0}
-    # GDELT is the only production source vetted for this ingestion use.
-    # Google News RSS has reuse restrictions and is intentionally excluded.
-    jobs=[("gdelt",country) for country in selected]
-    reports=[];errors=[];counts={"gdelt_ok":0}
-    def run(job):
-        kind,country=job
-        func=gdelt_json
-        for attempt in range(2):
-            try:return (job,func(country),None)
-            except (urllib.error.URLError,ValueError,TimeoutError,RuntimeError) as exc:
-                if attempt==0:time.sleep(3 if kind=="gdelt" else 1.2)
-                else:return (job,[],str(exc)[:150])
-        return (job,[],"Unknown fetch failure")
-    # No burst: DOC API protects shared infrastructure with strict throttling.
-    # Serialize the queries and apply a conservative delay between requests.
-    for idx,job in enumerate(jobs):
-        if idx:time.sleep(5.5)
-        rows_job,rows,error=run(job)
-        job=rows_job
-        if error:errors.append({"provider":job[0],"country":job[1],"error":error})
-        else:counts["gdelt_ok"]+=1
-        reports.extend(rows)
-    return reports,selected,errors,counts
+    """Scan a single publicly documented global RSS feed against all 194 country-topic labels."""
+    selected=[c["name"] for c in countries if c["name"]!="United States"]
+    if disable_network:return [],selected,[],{"gal_ok":0,"gal_scanned":0}
+    try:
+        reports,examined=fetch_gal(countries,limit=1500)
+        return reports,selected,[],{"gal_ok":1,"gal_scanned":examined}
+    except (urllib.error.URLError,ValueError,TimeoutError,RuntimeError) as exc:
+        return [],selected,[{"provider":"GDELT GAL RSS","country":"Global","error":str(exc)[:240]}],{"gal_ok":0,"gal_scanned":0}
 
 def main(argv=None):
     parser=argparse.ArgumentParser()
@@ -284,13 +268,13 @@ def main(argv=None):
     slot=NOW.hour//3
     articles,selected,errors,counts=collect(countries,slot,args.all,args.offline)
     events,added=merge_articles(articles,previous.get("events",[]),group_catalogs,outlets,max_events=args.max_events)
-    diagnostic=dict(status="ok" if counts["gdelt_ok"] else "no-provider-success",
+    diagnostic=dict(status=("ok" if articles else "no-matching-country-headlines") if counts["gal_ok"] else "no-provider-success",
         searchedCountries=len(selected),receivedArticles=len(articles),
         addedPublications=added,providers=counts,errors=errors[:35],
         policy="Article headlines are attributed reports, not verified facts. Political affiliations require documented outlet mappings.",
-        note="GDELT-only intake rotates across 194 countries over eight 3-hour slots; United States deferred. Source API calls are serialized and rate-limited.")
+        note="GDELT GAL RSS monitored for a rolling 15-minute global article-list window; title mentions determine country-topic relevance across 194 countries. US deferred. This does not establish event location or verify an article claim.")
     write_json(OUTPUT,dict(updatedAt=NOW.isoformat(),events=events,diagnostics=diagnostic))
-    log.info("Countries=%s source reports=%s new publications=%s events=%s provider results=%s",
+    log.info("Country catalog=%s source reports=%s new publications=%s events=%s provider results=%s",
              len(selected),len(articles),added,len(events),counts)
     if errors:log.warning("Some provider calls failed; %s errors recorded in diagnostics.",len(errors))
 
