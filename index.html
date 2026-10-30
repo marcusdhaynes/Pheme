@@ -91,7 +91,7 @@
   <main class="newspaper" id="top">
     <svg class="paper-noise" preserveAspectRatio="none" aria-hidden="true"><filter id="noise-filter"><feTurbulence type="fractalNoise" baseFrequency=".69" numOctaves="3" seed="7" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#noise-filter)" opacity=".24"/></svg>
     <div class="paper-content">
-      <div class="running-head"><span>ALL THE STORIES THAT MOVE THE WORLD</span><span>AN EDITION FOR PEOPLE SEEKING THE FULL PICTURE</span></div>
+      <div class="running-head"><span>ALL THE STORIES THAT MOVE THE WORLD</span><span id="pheme-edition-count">PERSONAL EDITION · NO COUNTRIES SELECTED</span></div>
       <header class="newspaper-head">
         <div class="masthead">
           <div class="mast-side mast-side-left"><span>AN INDEPENDENT</span><strong>CHRONICLE</strong><span>OF WORLD EVENTS</span></div>
@@ -106,10 +106,17 @@
       </header>
 
       <div class="edition-grid">
-        <section class="pheme-empty-edition">
-          <h2>Your edition awaits</h2>
-          <p>Choose countries in Settings. News appears after the connected, attributed news feed is updated.</p>
+        <aside class="story-rail left-rail" aria-label="Left newspaper column">
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">YOUR NEWSROOM</div><h3 class="side-title">COUNTRY SELECTION</h3><p class="story-text">Select the countries you wish to read about from Settings.</p></article>
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">EVIDENCE FIRST</div><h3 class="side-title">SOURCE COVERAGE</h3><p class="story-text">Read the original linked reporting behind each account.</p></article>
+        </aside>
+        <section class="lead-column" aria-label="Lead newspaper column">
+          <article class="pheme-story-card pheme-feature pheme-placeholder"><div class="section-label">PHEME · DAILY EDITION</div><h2 class="lead-title">YOUR WORLD, YOUR NEWSPAPER</h2><p class="pheme-card-copy">No countries are selected by default. Your newspaper fills with reports when you choose countries in Settings.</p></article>
         </section>
+        <aside class="story-rail right-rail" aria-label="Right newspaper column">
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">YOUR PREFERENCES</div><h3 class="side-title">NEWS SECTIONS</h3><p class="story-text">Show the sections that matter to you.</p></article>
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">WORLD REPORT</div><h3 class="side-title">LANGUAGE</h3><p class="story-text">Read English source reporting by default or choose another available original language.</p></article>
+        </aside>
       </div>
 
       <div class="paper-footer"><span>THE PHEME CHRONICLE</span><span>— ATTRIBUTED NEWS · SOURCES PRESERVED —</span><span>EST. MMXXVI</span></div>
@@ -131,8 +138,8 @@
     <p class="settings-note">Your paper preferences are saved on this device. Country choices are initially empty and saved on this device. Verified stories require a connected news feed.</p>
   </aside>
   <div class="scrim" id="scrim" hidden></div>
-  <dialog id="reader-dialog" class="reader-dialog"><button class="dialog-close" id="dialog-close" aria-label="Close story">✕</button><div class="dialog-kicker" id="dialog-kicker">SECTION 02</div><h2 id="dialog-title"></h2><div class="dialog-rule"></div><div id="dialog-body"></div><p class="dialog-colophon">PHEME · THE DAILY CHRONICLE · SAMPLE EDITION</p></dialog>
-  <dialog id="archive-dialog" class="archive-dialog"><button class="dialog-close" data-close-dialog="archive-dialog" aria-label="Close archive">✕</button><p class="eyebrow">THE PRINTED RECORD</p><h2>Edition Archive</h2><div class="dialog-rule"></div><button class="archive-entry" id="archive-open"><span>VOL. I · NO. 001</span><strong>The Inaugural Cinema Edition</strong><small>Today's paper · Seven stories</small></button><p class="archive-note">More editions will appear here when real news is connected. For now, enjoy our fictitious cinema edition.</p></dialog>
+  <dialog id="reader-dialog" class="reader-dialog"><button class="dialog-close" id="dialog-close" aria-label="Close story">✕</button><div class="dialog-kicker" id="dialog-kicker">SECTION 02</div><h2 id="dialog-title"></h2><div class="dialog-rule"></div><div id="dialog-body"></div><p class="dialog-colophon">PHEME · THE DAILY CHRONICLE · ORIGINAL REPORTING CREDITED</p></dialog>
+  <dialog id="archive-dialog" class="archive-dialog"><button class="dialog-close" data-close-dialog="archive-dialog" aria-label="Close archive">✕</button><p class="eyebrow">THE PRINTED RECORD</p><h2>Edition Archive</h2><div class="dialog-rule"></div><button class="archive-entry" id="archive-open"><span>VOL. I · NO. 001</span><strong>Current global edition</strong><small>Country-selected reports · continually updated</small></button><p class="archive-note">The current edition updates from publicly attributed reporting. Historic edition archiving and independent claim verification are being developed.</p></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./app.js" defer></script>
   <script src="./news-engine.js" defer></script>
