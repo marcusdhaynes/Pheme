@@ -1,0 +1,271 @@
+{
+  "description": "Illustrative significant political groups, not claims that any publisher belongs to a party. Add/update country groups only after verification. Any number per country supported.",
+  "countries": {
+    "United Kingdom": [
+      {
+        "id": "labour-party",
+        "name": "Labour Party"
+      },
+      {
+        "id": "conservative-party",
+        "name": "Conservative Party"
+      },
+      {
+        "id": "reform-uk",
+        "name": "Reform UK"
+      }
+    ],
+    "Canada": [
+      {
+        "id": "liberal-party",
+        "name": "Liberal Party"
+      },
+      {
+        "id": "conservative-party",
+        "name": "Conservative Party"
+      }
+    ],
+    "India": [
+      {
+        "id": "bharatiya-janata-party",
+        "name": "Bharatiya Janata Party"
+      },
+      {
+        "id": "indian-national-congress",
+        "name": "Indian National Congress"
+      }
+    ],
+    "Brazil": [
+      {
+        "id": "workers-party",
+        "name": "Workers' Party"
+      },
+      {
+        "id": "liberal-party",
+        "name": "Liberal Party"
+      }
+    ],
+    "Germany": [
+      {
+        "id": "cdu-csu",
+        "name": "CDU/CSU"
+      },
+      {
+        "id": "social-democratic-party",
+        "name": "Social Democratic Party"
+      },
+      {
+        "id": "alternative-for-germany",
+        "name": "Alternative for Germany"
+      }
+    ],
+    "France": [
+      {
+        "id": "renaissance",
+        "name": "Renaissance"
+      },
+      {
+        "id": "national-rally",
+        "name": "National Rally"
+      },
+      {
+        "id": "la-france-insoumise",
+        "name": "La France Insoumise"
+      }
+    ],
+    "Türkiye": [
+      {
+        "id": "justice-and-development-party",
+        "name": "Justice and Development Party"
+      },
+      {
+        "id": "republican-people-s-party",
+        "name": "Republican People's Party"
+      }
+    ],
+    "Israel": [
+      {
+        "id": "likud",
+        "name": "Likud"
+      },
+      {
+        "id": "yashar",
+        "name": "Yashar"
+      }
+    ],
+    "China": [
+      {
+        "id": "chinese-communist-party",
+        "name": "Chinese Communist Party"
+      }
+    ],
+    "Russia": [
+      {
+        "id": "united-russia",
+        "name": "United Russia"
+      },
+      {
+        "id": "communist-party-of-the-russian-federation",
+        "name": "Communist Party of the Russian Federation"
+      }
+    ],
+    "Japan": [
+      {
+        "id": "liberal-democratic-party",
+        "name": "Liberal Democratic Party"
+      },
+      {
+        "id": "centrist-reform-alliance",
+        "name": "Centrist Reform Alliance"
+      }
+    ],
+    "Palestine": [
+      {
+        "id": "fatah",
+        "name": "Fatah"
+      },
+      {
+        "id": "hamas",
+        "name": "Hamas"
+      }
+    ],
+    "Pakistan": [
+      {
+        "id": "pakistan-muslim-league-nawaz",
+        "name": "Pakistan Muslim League–Nawaz"
+      },
+      {
+        "id": "pakistan-tehreek-e-insaf",
+        "name": "Pakistan Tehreek-e-Insaf"
+      }
+    ],
+    "South Africa": [
+      {
+        "id": "african-national-congress",
+        "name": "African National Congress"
+      },
+      {
+        "id": "democratic-alliance",
+        "name": "Democratic Alliance"
+      },
+      {
+        "id": "umkhonto-wesizwe-party",
+        "name": "uMkhonto weSizwe Party"
+      }
+    ],
+    "Australia": [
+      {
+        "id": "australian-labor-party",
+        "name": "Australian Labor Party"
+      },
+      {
+        "id": "liberal-national-coalition",
+        "name": "Liberal–National Coalition"
+      }
+    ],
+    "Argentina": [
+      {
+        "id": "la-libertad-avanza",
+        "name": "La Libertad Avanza"
+      },
+      {
+        "id": "peronist-opposition",
+        "name": "Peronist opposition"
+      }
+    ],
+    "Bangladesh": [
+      {
+        "id": "bangladesh-nationalist-party",
+        "name": "Bangladesh Nationalist Party"
+      },
+      {
+        "id": "jamaat-e-islami",
+        "name": "Jamaat-e-Islami"
+      }
+    ],
+    "Afghanistan": [
+      {
+        "id": "taliban",
+        "name": "Taliban"
+      },
+      {
+        "id": "national-resistance-front",
+        "name": "National Resistance Front"
+      }
+    ],
+    "Indonesia": [
+      {
+        "id": "gerindra",
+        "name": "Gerindra"
+      },
+      {
+        "id": "indonesian-democratic-party-of-struggle",
+        "name": "Indonesian Democratic Party of Struggle"
+      }
+    ],
+    "Ukraine": [
+      {
+        "id": "servant-of-the-people",
+        "name": "Servant of the People"
+      },
+      {
+        "id": "european-solidarity",
+        "name": "European Solidarity"
+      }
+    ],
+    "Italy": [
+      {
+        "id": "brothers-of-italy",
+        "name": "Brothers of Italy"
+      },
+      {
+        "id": "democratic-party",
+        "name": "Democratic Party"
+      },
+      {
+        "id": "five-star-movement",
+        "name": "Five Star Movement"
+      }
+    ],
+    "Mexico": [
+      {
+        "id": "morena",
+        "name": "Morena"
+      },
+      {
+        "id": "national-action-party",
+        "name": "National Action Party"
+      }
+    ],
+    "New Zealand": [
+      {
+        "id": "national-party",
+        "name": "National Party"
+      },
+      {
+        "id": "labour-party",
+        "name": "Labour Party"
+      }
+    ],
+    "South Korea": [
+      {
+        "id": "democratic-party-of-korea",
+        "name": "Democratic Party of Korea"
+      },
+      {
+        "id": "people-power-party",
+        "name": "People Power Party"
+      }
+    ],
+    "Nigeria": [
+      {
+        "id": "all-progressives-congress",
+        "name": "All Progressives Congress"
+      },
+      {
+        "id": "people-s-democratic-party",
+        "name": "People's Democratic Party"
+      }
+    ]
+  }
+}
