@@ -38,6 +38,31 @@ jobs:
           assert articles, "No headlines mention countries in 15-minute window"
           assert all(a["api"]=="GDELT GAL RSS" and a["url"].startswith("http") for a in articles)
           PY
+      - name: Check GDELT metadata JSONL availability and fields
+        run: |
+          python - <<'PY'
+          import datetime as dt, gzip, json, urllib.request, urllib.error
+          now=dt.datetime.now(dt.timezone.utc).replace(second=0,microsecond=0)
+          found=0
+          for mins in range(3,37):
+              t=now-dt.timedelta(minutes=mins)
+              url='https://data.gdeltproject.org/gdeltv3/gal/'+t.strftime('%Y%m%d%H%M')+'00.gal.json.gz'
+              try:
+                  with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'PHEME-SourceAudit/1.0'}),timeout=12) as res:
+                      blob=res.read(6_000_000)
+                  lines=gzip.decompress(blob).decode('utf-8').splitlines()
+                  parsed=[json.loads(x) for x in lines[:3] if x.strip()]
+                  print('METADATA FILE',url,'count',len(lines),'fields',[list(p.keys()) for p in parsed])
+                  for p in parsed[:2]:
+                      print('SAMPLE',json.dumps({k:str(p.get(k,''))[:200] for k in ['url','title','desc','lang','author','image','date','outletName']},ensure_ascii=False))
+                  found+=1
+                  if found>=2:break
+              except urllib.error.HTTPError as exc:
+                  if exc.code not in (404,429):print('HTTP',exc.code,url)
+              except Exception as exc:print('ERROR',type(exc).__name__,str(exc)[:160])
+          print('METADATA_SUCCESS_COUNT',found)
+          if not found:raise SystemExit('No GAL JSON metadata file available in preceding 36 minutes')
+          PY
       - name: Probe GDELT raw GAL RSS and DOC JSON
         run: |
           PYTHONPATH=scripts python - <<'PY'
