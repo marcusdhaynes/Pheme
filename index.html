@@ -82,7 +82,7 @@
         <button class="icon-button settings-gear" id="settings-toggle" aria-label="Open settings" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m10 2-.4 2.1-1.9.8-1.8-1.2-2.2 2.2 1.2 1.8-.8 1.9L2 10v4l2.1.4.8 1.9-1.2 1.8 2.2 2.2 1.8-1.2 1.9.8L10 22h4l.4-2.1 1.9-.8 1.8 1.2 2.2-2.2-1.2-1.8.8-1.9L22 14v-4l-2.1-.4-.8-1.9 1.2-1.8-2.2-2.2-1.8 1.2-1.9-.8L14 2Z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
     </div>
-    <div class="search-bar" id="search-bar" hidden><label for="search-input">FIND A STORY</label><input id="search-input" type="search" placeholder="Search movie headlines, quotes, and stories..." autocomplete="off"><button id="search-close" aria-label="Close search">✕</button></div>
+    <div class="search-bar" id="search-bar" hidden><label for="search-input">FIND A STORY</label><input id="search-input" type="search" placeholder="Search country news and verified events..." autocomplete="off"><button id="search-close" aria-label="Close search">✕</button></div>
     <div class="sections-menu" id="sections-menu" hidden>
       <a href="#section-01">Section 01</a><a href="#section-02">Section 02</a><a href="#section-03">Section 03</a><a href="#section-04">Section 04</a><a href="#section-05">Section 05</a><a href="#section-06">Section 06</a><a href="#section-07">Section 07</a>
     </div>
@@ -91,7 +91,7 @@
   <main class="newspaper" id="top">
     <svg class="paper-noise" preserveAspectRatio="none" aria-hidden="true"><filter id="noise-filter"><feTurbulence type="fractalNoise" baseFrequency=".69" numOctaves="3" seed="7" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#noise-filter)" opacity=".24"/></svg>
     <div class="paper-content">
-      <div class="running-head"><span>ALL THE STORIES THAT MOVE THE WORLD</span><span>AN EDITION FOR LOVERS OF THE MOVING PICTURE</span></div>
+      <div class="running-head"><span>ALL THE STORIES THAT MOVE THE WORLD</span><span>AN EDITION FOR PEOPLE SEEKING THE FULL PICTURE</span></div>
       <header class="newspaper-head">
         <div class="masthead">
           <div class="mast-side mast-side-left"><span>AN INDEPENDENT</span><strong>CHRONICLE</strong><span>OF CURIOUS THINGS</span></div>
@@ -101,7 +101,7 @@
           <div class="mast-side mast-side-right"><span>THE WORLD'S</span><strong>DAILY EDITION</strong><span>OF CINEMA & CULTURE</span></div>
         </div>
         <div class="edition-line"><span>VOL. I &nbsp; · &nbsp; NO. 001</span><span>WORLD NEWS FOR AN IMAGINATIVE TOMORROW</span><time id="date-label" datetime="2026-10-29">THURSDAY, OCTOBER 29, 2026</time></div>
-        <div class="rubric"><span class="rubric-wing"></span><span>THE DAILY CHRONICLE OF THE MOVING PICTURE</span><span class="rubric-wing"></span></div>
+        <div class="rubric"><span class="rubric-wing"></span><span>AN INDEPENDENT CHRONICLE OF WORLD EVENTS</span><span class="rubric-wing"></span></div>
         <div class="fine-rule"></div>
       </header>
 
@@ -243,12 +243,13 @@
     <div class="setting-block"><label for="font-range">Article Text Size <output id="font-output">100%</output></label><input id="font-range" type="range" min="90" max="125" value="100" step="5"></div>
     <div class="setting-block"><label for="ink-range">Ink Density <output id="ink-output">100%</output></label><input id="ink-range" type="range" min="70" max="100" value="100" step="5"><p class="setting-caption">Monochrome ink, never backlit color.</p></div>
     <button class="reset-button" id="reset-settings">Restore print defaults</button>
-    <p class="settings-note">Your paper preferences are saved on this device. Every story is temporary sample copy.</p>
+    <p class="settings-note">Your paper preferences are saved on this device. Country choices are initially empty and saved on this device. Verified stories require a connected news feed.</p>
   </aside>
   <div class="scrim" id="scrim" hidden></div>
   <dialog id="reader-dialog" class="reader-dialog"><button class="dialog-close" id="dialog-close" aria-label="Close story">✕</button><div class="dialog-kicker" id="dialog-kicker">SECTION 02</div><h2 id="dialog-title"></h2><div class="dialog-rule"></div><div id="dialog-body"></div><p class="dialog-colophon">PHEME · THE DAILY CHRONICLE · SAMPLE EDITION</p></dialog>
   <dialog id="archive-dialog" class="archive-dialog"><button class="dialog-close" data-close-dialog="archive-dialog" aria-label="Close archive">✕</button><p class="eyebrow">THE PRINTED RECORD</p><h2>Edition Archive</h2><div class="dialog-rule"></div><button class="archive-entry" id="archive-open"><span>VOL. I · NO. 001</span><strong>The Inaugural Cinema Edition</strong><small>Today's paper · Seven stories</small></button><p class="archive-note">More editions will appear here when real news is connected. For now, enjoy our fictitious cinema edition.</p></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="./app.js" defer></script>
+  <script src="./news-engine.js" defer></script>
 </body>
 </html>
