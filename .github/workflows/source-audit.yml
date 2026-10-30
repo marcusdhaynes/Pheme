@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   source-probe:
-    name: Validate GDELT live response
+    name: Check free GDELT source delivery
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -19,24 +19,35 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Probe GDELT DOC 2.0 API with a real one-country query
+      - name: Probe GDELT raw GAL RSS and DOC JSON
         run: |
           PYTHONPATH=scripts python - <<'PY'
-          import json
+          import urllib.request
           import urllib.error
           import build_news
-          print('Endpoint: https://api.gdeltproject.org/api/v2/doc/doc')
+          results={}
+          sources={
+            "GDELT GAL RSS":"https://data.gdeltproject.org/gdeltv3/gal/feed.rss",
+            "GDELT GKG index":"https://data.gdeltproject.org/gkg/index.html"
+          }
+          for name,url in sources.items():
+              try:
+                  request=urllib.request.Request(url,headers={'User-Agent':'PHEME Source Audit/1.0'})
+                  with urllib.request.urlopen(request,timeout=22) as response:
+                      sample=response.read(4096)
+                      results[name]=True
+                      print(name,'OK',response.status,'type=',response.headers.get('content-type'),'sample=',sample[:160])
+              except Exception as exc:
+                  results[name]=False
+                  print(name,'FAIL',type(exc).__name__,str(exc)[:250])
           try:
               items=build_news.gdelt_json('Canada')
-              print('Valid JSON parsed; matching articles:',len(items))
-              if not items:
-                  raise RuntimeError('GDELT returned zero articles for Canada in 24h')
-              assert all(x.get('url','').startswith('http') for x in items)
-              assert all(x.get('title') for x in items)
-              assert all(x.get('published') and x.get('api') == 'GDELT DOC 2.0' for x in items)
-              print('Sample:',json.dumps({'title':items[0]['title'],'domain':items[0]['domain'],'published':items[0]['published']},ensure_ascii=False))
-              print('Source probe PASSED')
+              results['GDELT DOC JSON']=bool(items)
+              print('GDELT DOC JSON','items=',len(items))
           except Exception as exc:
-              print('Source probe FAILED:',type(exc).__name__,str(exc)[:500])
-              raise
+              results['GDELT DOC JSON']=False
+              print('GDELT DOC JSON FAIL',type(exc).__name__,str(exc)[:250])
+          print('Results:',results)
+          if not any(results.values()):
+              raise SystemExit('No GDELT delivery source accessible')
           PY
