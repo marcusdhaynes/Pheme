@@ -82,5 +82,35 @@ class NewsTests(unittest.TestCase):
         self.assertNotIn("Georgia",gal.detect_countries("Georgia's football team beat Jordan",countries))
         self.assertNotIn("Jordan",gal.detect_countries("Georgia's football team beat Jordan",countries))
 
+
+    def test_article_metadata_language_and_report(self):
+        import gzip,json
+        from article_enrichment import parse_gal_jsonl,attach_metadata,enrich_event
+        raw={'url':'https://example.com/123','title':'Canada announces new public transit proposal',
+             'desc':'The transport ministry plans to extend service access for commuters next year.',
+             'lang':'en','author':'A. Reporter','outletName':'Example News',
+             'image':'https://images.example.com/photo.jpg','date':'2026-10-29T12:00:00.000Z'}
+        records=parse_gal_jsonl(gzip.compress((json.dumps(raw)+'\\n').replace('\\n','\n').encode('utf8')))
+        self.assertEqual(records['example.com/123']['lang'],'en')
+        row={'url':raw['url'],'title':raw['title'],'country':'Canada','countries':['Canada'],
+             'publisher':'Original','domain':'example.com','published':n.NOW.isoformat(),'api':'GDELT GAL RSS'}
+        pub=attach_metadata(row,records)
+        self.assertEqual(pub['description'],raw['desc'])
+        self.assertEqual(pub['lang'],'en')
+        ev,added=n.merge_articles([pub],[],{},[],40)
+        self.assertEqual(added,1)
+        self.assertEqual(len(ev[0]['reportedClaims']),1)
+        self.assertTrue(ev[0]['parties'] is not None)
+        self.assertEqual(ev[0]['facts'],[])
+        self.assertTrue(ev[0]['agendas'])
+        self.assertEqual(ev[0]['publications'][0]['lang'],'en')
+
+    def test_language_metadata_and_invalid_image(self):
+        from article_enrichment import norm_lang,safe_web_url
+        self.assertEqual(norm_lang('eng'),'en')
+        self.assertEqual(norm_lang('es'),'es')
+        self.assertIsNone(norm_lang('unrecognized'))
+        self.assertEqual(safe_web_url('javascript:alert(1)'),'')
+
 if __name__=="__main__":
     unittest.main()
