@@ -1,6 +1,6 @@
 {
   "diagnostics": {
-    "addedPublications": 153,
+    "addedPublications": 0,
     "errors": [],
     "metadata": {
       "checked": 22,
@@ -1796,7 +1796,18 @@
       "updatedAt": "2026-10-30T03:17:00+00:00"
     },
     {
-      "agendas": [],
+      "agendas": [
+        {
+          "sources": [
+            {
+              "name": "RestaurantNews.com",
+              "url": "https://www.restaurantnews.com/rodizio-grill-brazilian-steakhouse-ogden-utah-restaurant-102926/"
+            }
+          ],
+          "status": "attributed-unverified",
+          "text": "Source-reported objective (unverified): Rodizio Grill announces plans to open a third Utah restaurant in Ogden, bringing signature churrasco dining to Northern Utah."
+        }
+      ],
       "availableLanguages": [
         "en"
       ],
@@ -8516,7 +8527,18 @@
         "Australia"
       ],
       "coverage": [],
-      "doubts": [],
+      "doubts": [
+        {
+          "sources": [
+            {
+              "name": "Amnesty International Australia",
+              "url": "https://www.amnesty.org.au/"
+            }
+          ],
+          "status": "attributed-unverified",
+          "text": "Source describes a dispute (unverified): When human rights are denied, we won’t be silent. We'll continue to campaign relentlessly and give a voice to those who’ve had theirs taken away. Join us."
+        }
+      ],
       "eventId": "event-c153ca91934890c6b8",
       "facts": [],
       "featuredImage": "https://www.amnesty.org.au/wp-content/uploads/2016/07/229190_Activists_Call_For_Stop_To_Bali_Nine_Duo_Executions-1.jpg",
@@ -8835,7 +8857,18 @@
       "updatedAt": "2026-10-30T03:17:00+00:00"
     },
     {
-      "agendas": [],
+      "agendas": [
+        {
+          "sources": [
+            {
+              "name": "Toronto Telegraph",
+              "url": "http://www.torontotelegraph.com/news/279403629/canada-eu-summit-opens-with-associate-membership-proposal-in-doubt"
+            }
+          ],
+          "status": "attributed-unverified",
+          "text": "Source-reported objective (unverified): A European Union-Canada summit aims to create a deeper alliance. But European leaders are pouring cold water on the idea of making Canada an \"associate member\" of the EU."
+        }
+      ],
       "availableLanguages": [
         "en"
       ],
@@ -30683,5 +30716,5 @@
       "updatedAt": "2026-10-30T03:01:00+00:00"
     }
   ],
-  "updatedAt": "2026-10-30T03:26:00.249355+00:00"
+  "updatedAt": "2026-10-30T03:29:25.840915+00:00"
 }
