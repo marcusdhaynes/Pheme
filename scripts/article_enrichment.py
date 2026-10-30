@@ -163,10 +163,26 @@ def enrich_event(event):
     # Country mentions in HEADLINES are not independently verified event geolocation.
     event['locations']=[{'text':c+' (mentioned in headlines; event location not verified)',
                          'status':'country-topic-mention'} for c in event.get('countries',[])]
+    # Very cautious rule-based signals: these are attributed source claims, NOT established truths.
     event['facts']=[]
     event['doubts']=[]
     event['agendas']=[]
     event['impacts']=[]
+    agenda_pattern=re.compile(r'\b(?:aims? to|seeks? to|goal is to|intended to|in order to|plans? to)\b',re.I)
+    impact_pattern=re.compile(r'\b(?:could|may|expected to|would)\b.{0,95}\b(?:affect|impact|cost|increase|reduce|jobs|prices|health|services|communities|schools|households)\b',re.I)
+    dispute_pattern=re.compile(r'\b(?:disputes?|denies|denied|contradicts?|rejects? (?:the )?claim|contested|no evidence)\b',re.I)
+    for pub in pubs:
+        desc=clean(pub.get('description',''),260)
+        if not desc or not pub.get('url'):continue
+        src=[{'name':pub.get('name') or 'Original publisher','url':pub['url']}]
+        for pattern,field,label in (
+            (agenda_pattern,'agendas','Source-reported objective (unverified): '),
+            (impact_pattern,'impacts','Source-reported potential impact (unverified): '),
+            (dispute_pattern,'doubts','Source describes a dispute (unverified): ')
+        ):
+            if pattern.search(desc) and len(event[field])<3 and not any(x.get('text','').endswith(desc) for x in event[field]):
+                event[field].append({'text':label+desc,'sources':src,'status':'attributed-unverified'})
+
     event['unknowns']=[
         {'text':'The underlying event claims have not been independently verified against primary records.'},
         {'text':'The precise event location, motives and societal impacts may not be established by the available source metadata.'}
