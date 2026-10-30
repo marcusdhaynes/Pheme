@@ -9,6 +9,7 @@ on:
       - 'scripts/build_news.py'
       - 'scripts/article_enrichment.py'
       - 'scripts/gal_feed.py'
+      - 'scripts/gkg_enrichment.py'
       - 'scripts/test_news.py'
       - 'data/**'
       - '.github/workflows/news-refresh.yml'
@@ -59,6 +60,10 @@ jobs:
           assert all(not x.get('facts') for x in data['events'])
           print('Validated',len(data['events']),'attributed event clusters')
           print('Source diagnostics:',data['diagnostics']['providers'])
+          print('Article metadata:',data['diagnostics'].get('metadata'))
+          print('GKG entity metadata:',data['diagnostics'].get('gkg'))
+          print('Articles with source descriptions:',sum(bool(p.get('description')) for e in data['events'] for p in e.get('publications',[])))
+          print('Events with attributed text:',sum(bool(e.get('reportedClaims')) for e in data['events']))
           PY
       - name: Commit updated newspaper edition
         run: |
