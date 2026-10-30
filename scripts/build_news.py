@@ -140,8 +140,10 @@ def gdelt_json(country):
         url=item.get("url")
         if not title or not url:continue
         seen=str(item.get("seendate") or "")
-        try:created=dt.datetime.strptime(seen[:14],"%Y%m%dT%H%M%S").replace(tzinfo=UTC)
-        except ValueError:created=NOW
+        try:created=dt.datetime.strptime(seen[:15],"%Y%m%dT%H%M%S").replace(tzinfo=UTC)
+        except ValueError:
+            try:created=dt.datetime.strptime(seen[:14],"%Y%m%d%H%M%S").replace(tzinfo=UTC)
+            except ValueError:continue
         if created < NOW-dt.timedelta(days=3):continue
         domain=str(item.get("domain") or "").lower()
         rows.append(dict(title=title,url=url,publisher=domain or "Unknown publisher",
@@ -276,7 +278,7 @@ def collect(countries,slot,all_countries=False,disable_network=False,max_workers
         for attempt in range(2):
             try:return (job,func(country),None)
             except (urllib.error.URLError,ValueError,ET.ParseError,TimeoutError,RuntimeError) as exc:
-                if attempt==0:time.sleep(1.2)
+                if attempt==0:time.sleep(3 if kind=="gdelt" else 1.2)
                 else:return (job,[],str(exc)[:150])
         return (job,[],"Unknown fetch failure")
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
