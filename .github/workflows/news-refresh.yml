@@ -38,7 +38,7 @@ jobs:
           node --check app.js
           node --check news-engine.js
           node --check sw.js
-      - name: Fetch real source headlines (194-country rotation)
+      - name: Fetch GDELT article listings (194-country rotation)
         run: python scripts/build_news.py
       - name: Validate feed structure
         run: |
