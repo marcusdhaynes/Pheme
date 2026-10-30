@@ -136,7 +136,7 @@
     // A mark exists only when a source URL is attached to the political perspective.
     const slots = new Set();
     story.coverage.forEach(c=>{
-      if (!c || !LEVELS.includes(String(c.level||'').toLowerCase()) || !(c.sources||[]).some(urlSafe)) return;
+      if (!c || !LEVELS.includes(String(c.level||'').toLowerCase()) || !(c.sources||[]).some(s=>urlSafe(typeof s==='string'?s:s && s.url))) return;
       slots.add([c.country,c.groupId||c.group,String(c.level).toLowerCase()].join('::'));
     });
     return slots.size;
@@ -151,6 +151,17 @@
     const actions=el('div','story-footer');
     const read=el('button','read-link','Read report ↗'); read.type='button'; read.addEventListener('click',()=>openStory(story));
     actions.appendChild(read);
+    const saved=bookmarkIds().includes(story.id);
+    const mark=el('button','bookmark-button',saved?'★':'☆');
+    mark.type='button';mark.setAttribute('aria-label',(saved?'Remove bookmark':'Bookmark story')+': '+story.title);
+    mark.setAttribute('aria-pressed',String(saved));
+    mark.addEventListener('click',()=>{
+      let ids=bookmarkIds();
+      ids=saved?ids.filter(id=>id!==story.id):uniqueStrings(ids.concat(story.id));
+      try{localStorage.setItem('pheme.newsBookmarks',JSON.stringify(ids));}catch(_){}
+      renderEdition();
+    });
+    actions.appendChild(mark);
     article.append(section,heading,copy,info,actions);
     return article;
   }
@@ -216,6 +227,8 @@
     try {const v=JSON.parse(localStorage.getItem('pheme.newsBookmarks')); return Array.isArray(v)?v:[];}catch(_){return [];}
   }
   function renderEdition() {
+    document.getElementById('bookmark-count').textContent=bookmarkIds().length||'';
+    document.getElementById('bookmarks-button').classList.toggle('nav-active',bookmarkOnly);
     grid.replaceChildren();
     const note=document.getElementById('search-empty'); if(note)note.remove();
     ed.textContent='YOUR SELECTED COUNTRIES · ONE EVOLVING ACCOUNT';
@@ -249,8 +262,17 @@
     replace(records) { feed=mergeStories(records);renderEdition();return feed.length; },
     getSelectedCountries() {return Array.from(selected);},
     applyFilters(options) {if(options && typeof options.bookmarksOnly==='boolean')bookmarkOnly=options.bookmarksOnly;renderEdition();},
+    toggleBookmarks() {bookmarkOnly=!bookmarkOnly;renderEdition();return bookmarkOnly;},
+    showAll() {bookmarkOnly=false;renderEdition();},
     getStoryCount() {return feed.length;}
   };
+  // The prior cinema mock edition and its navigation are intentionally retired.
+  const oldSections=document.getElementById('sections-button');
+  const oldArchive=document.getElementById('archive-button');
+  if(oldSections)oldSections.hidden=true;
+  if(oldArchive)oldArchive.hidden=true;
+  const colophon=document.querySelector('.dialog-colophon');
+  if(colophon)colophon.textContent='PHEME · EVIDENCE-BASED NEWS · ORIGINAL SOURCES CITED';
   renderCountries('');
   updateCount();
   renderEdition();
