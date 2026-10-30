@@ -7,6 +7,8 @@ on:
   push:
     paths:
       - 'scripts/build_news.py'
+      - 'scripts/article_enrichment.py'
+      - 'scripts/gal_feed.py'
       - 'scripts/test_news.py'
       - 'data/**'
       - '.github/workflows/news-refresh.yml'
