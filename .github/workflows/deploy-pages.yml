@@ -27,16 +27,20 @@ jobs:
       - name: Validate JavaScript
         run: |
           node --check app.js
+          node --check news-engine.js
           node --check sw.js
 
       - name: Stage static app
         run: |
-          mkdir -p dist
-          cp index.html styles.css app.js sw.js icon.svg manifest.webmanifest dist/
+          mkdir -p dist/news
+          cp index.html styles.css app.js news-engine.js sw.js icon.svg manifest.webmanifest dist/
+          cp news/stories.json dist/news/stories.json
           touch dist/.nojekyll
           test -s dist/index.html
           test -s dist/styles.css
           test -s dist/app.js
+          test -s dist/news-engine.js
+          test -s dist/news/stories.json
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
