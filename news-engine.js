@@ -81,6 +81,7 @@
       headlineVariantCount: Number(story.headlineVariantCount || 0),
       reportedClaims: Array.isArray(story.reportedClaims)?story.reportedClaims:[],
       availableLanguages: Array.isArray(story.availableLanguages)?story.availableLanguages:[],
+      topics: Array.isArray(story.topics)?story.topics:[],
       revisions: Array.isArray(story.revisions)?story.revisions:[],
       countries: uniqueStrings(story.countries).filter(x => supported.has(x)),
       groups: Array.isArray(story.groups) ? story.groups : [],
@@ -374,6 +375,7 @@
     addSection(body,'Doubts — documented contradictions',story.doubts);
     addSection(body,'Unknowns',story.unknowns);
     addSection(body,'Parties / named actors (automatic mentions, not verified involvement)',story.parties);
+    if(story.topics.length)addSection(body,'Topics (GDELT machine-extracted labels)',story.topics.slice(0,14).map(t=>({text:t.replace(/_/g,' ').toLowerCase()})));
     addSection(body,'Locations (country mentions, not confirmed event geolocation)',story.locations);
     addSection(body,'Agendas (only when documented)',story.agendas);
     addSection(body,'Impacts (only when evidenced)',story.impacts);
@@ -466,7 +468,7 @@
   const oldSections=document.getElementById('sections-button');
   const oldArchive=document.getElementById('archive-button');
   if(oldSections)oldSections.hidden=false;
-  if(oldArchive)oldArchive.hidden=true;
+  if(oldArchive)oldArchive.hidden=false;
   const colophon=document.querySelector('.dialog-colophon');
   if(colophon)colophon.textContent='PHEME · EVIDENCE-BASED NEWS · ORIGINAL SOURCES CITED';
   renderCountries('');
