@@ -56,5 +56,31 @@ class NewsTests(unittest.TestCase):
     def test_parser_discard_short_headlines(self):
         self.assertTrue(n.event_id("A",[]).startswith("event-"))
 
+
+    def test_gal_rss_country_classification(self):
+        import gal_feed as gal
+        countries=n.read_json(n.COUNTRIES,[])
+        xml=b'''<?xml version="1.0"?><rss version="2.0"><channel>
+          <item><title>Canadian research team develops new technology</title>
+          <link>https://example.org/story/1</link><pubDate>Thu, 29 Oct 2026 12:00:00 GMT</pubDate></item>
+          <item><title>Canada and Japan sign environmental pact</title>
+          <link>https://example.org/story/2</link><pubDate>Thu, 29 Oct 2026 13:00:00 GMT</pubDate></item>
+          <item><title>Unrelated city street event</title><link>https://example.org/story/3</link></item>
+        </channel></rss>'''
+        rows,scanned=gal.parse_rss_items(xml,countries)
+        self.assertEqual(scanned,3)
+        self.assertEqual(len(rows),2)
+        self.assertEqual(rows[0]["countries"],["Canada"])
+        self.assertIn("Canada",rows[1]["countries"])
+        self.assertIn("Japan",rows[1]["countries"])
+        self.assertNotIn("United States",rows[1]["countries"])
+        self.assertEqual(rows[0]["api"],"GDELT GAL RSS")
+
+    def test_no_bare_ambiguous_country_match(self):
+        import gal_feed as gal
+        countries=n.read_json(n.COUNTRIES,[])
+        self.assertNotIn("Georgia",gal.detect_countries("Georgia's football team beat Jordan",countries))
+        self.assertNotIn("Jordan",gal.detect_countries("Georgia's football team beat Jordan",countries))
+
 if __name__=="__main__":
     unittest.main()
