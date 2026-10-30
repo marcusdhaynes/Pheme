@@ -1,6 +1,6 @@
 # PHEME — The Daily Chronicle
 
-A responsive, installable vintage newspaper app inspired by historic printed papers. This inaugural edition is **deliberately fictional**; all section headings are temporary.
+A responsive, installable vintage newspaper app inspired by historic printed papers. The original inaugural edition was fictional; the new opt-in country edition leaves the front page empty until countries and a verified news feed are provided.
 
 ## Live edition
 
@@ -18,6 +18,11 @@ https://marcusdhaynes.github.io/Pheme/
 - Adjustable type size and ink density. Preferences persist locally.
 - Search, sections, archive, bookmarks, full-story reader, and print formatting.
 - Progressive web app: install from a compatible browser and read the cached edition offline.
+- Country-based subscriptions: all 195 countries, grouped by continent and region, **none selected by default**. Selection persists locally.
+- Arbitrary political group count per event: A, B, C, D, and beyond, each with moderate / mainstream / hardline coverage positions backed by source URLs.
+- A single event can combine incremental reports by event ID; duplicate claim and publication records are deduplicated, with the original sources retained.
+- Seven structured story sections: Facts, Doubts, Unknowns, Parties, Locations, Agendas, Impacts.
+- No mock news is displayed as real reporting. The verified feed is currently empty and must be populated by a separate editorial service.
 - No build system or framework dependencies.
 
 ## Deployment
@@ -38,7 +43,9 @@ Then visit http://localhost:8080/.
 
 - index.html — masthead, editorial layout, engraved SVG drawings, sample previews.
 - styles.css — responsive styles, paper textures, print rules.
-- app.js — temporary article content and app interactions.
+- app.js — paper settings, navigation, and legacy sample content (not shown in the new edition).
+- news-engine.js — selected countries, arbitrary political group coverage, story mergers, evidence reader.
+- news/stories.json — **empty** curated event feed. See docs/news-feed-schema.md to connect verified ingestion.
 - icon.svg, manifest.webmanifest, sw.js — installation and offline caching.
 
-All article facts and quotes are playful movie-related **placeholder fiction** and must be replaced with real editorial content before use as a news source.
+The original movie articles remain in the source as an archive of prototype layout code but are not displayed in the newspaper. Until an editorial ingestion/verification backend is connected, selecting a country shows an empty verified news edition rather than invented articles.
