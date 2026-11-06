@@ -28,5 +28,14 @@
   "current_stage": "database_reserved_not_live",
   "source_data_migrated": false,
   "docs": "AGENTS.md",
-  "canonical_map": "marcusdhaynes/somniel-holdings/database-routing.json"
+  "canonical_map": "marcusdhaynes/somniel-holdings/database-routing.json",
+  "domain_storage_guidance": {
+    "store": [
+      "Approved news source configuration, fetched article metadata, edition settings and explicitly licensed editorial records"
+    ],
+    "avoid": [
+      "Unlicensed full publisher articles or images, user tracking without consent, transient render caches"
+    ],
+    "cutover": "Preserve existing static news and offline reader behavior until new feed persistence is verified."
+  }
 }
