@@ -1,0 +1,3 @@
+/* Uniform auto-update styles — see updates/UPDATES_SPEC.md. Neutral / theme-aware. */
+#updates-section { margin-top: 1.25rem; }
+#update-ribbon { color: inherit; }

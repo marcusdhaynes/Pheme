@@ -136,11 +136,14 @@
     <div class="setting-block"><label for="ink-range">Ink Density <output id="ink-output">100%</output></label><input id="ink-range" type="range" min="70" max="100" value="100" step="5"><p class="setting-caption">Monochrome ink, never backlit color.</p></div>
     <button class="reset-button" id="reset-settings">Restore print defaults</button>
     <p class="settings-note">Your paper preferences are saved on this device. Country choices are initially empty and saved on this device. Verified stories require a connected news feed.</p>
+    <div id="updates-section" aria-label="Updates"></div>
   </aside>
   <div class="scrim" id="scrim" hidden></div>
   <dialog id="reader-dialog" class="reader-dialog"><button class="dialog-close" id="dialog-close" aria-label="Close story">✕</button><div class="dialog-kicker" id="dialog-kicker">SECTION 02</div><h2 id="dialog-title"></h2><div class="dialog-rule"></div><div id="dialog-body"></div><p class="dialog-colophon">PHEME · THE DAILY CHRONICLE · ORIGINAL REPORTING CREDITED</p></dialog>
   <dialog id="archive-dialog" class="archive-dialog"><button class="dialog-close" data-close-dialog="archive-dialog" aria-label="Close archive">✕</button><p class="eyebrow">THE PRINTED RECORD</p><h2>Edition Archive</h2><div class="dialog-rule"></div><button class="archive-entry" id="archive-open"><span>VOL. I · NO. 001</span><strong>Current global edition</strong><small>Country-selected reports · continually updated</small></button><p class="archive-note">The current edition updates from publicly attributed reporting. Historic edition archiving and independent claim verification are being developed.</p></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <link rel="stylesheet" href="./updates/updates.css">
+  <script src="./updates/updates.js" defer></script>
   <script src="./app.js" defer></script>
   <script src="./news-engine.js" defer></script>
 </body>
