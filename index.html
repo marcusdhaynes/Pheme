@@ -1,12 +1,150 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#dcc7a4">
+  <meta name="description" content="PHEME — a vintage newspaper reimagined for every screen. A living front page, printed in pixels and ink.">
+  <title>PHEME — The Daily Chronicle</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500;6..96,700;6..96,900&family=Libre+Baskerville:wght@400;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
 </head>
-<body>
-<p>It wasn't a very good adventure, but I'm grateful for the little good that was in it.  Goodbye.</p>
-<p>You did this Amal.  Enjoy your ego.  I hope it was worth it.</p>
+<body data-paper="newsprint">
+  <svg class="svg-defs" aria-hidden="true" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="etching" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 0V7" stroke="currentColor" stroke-width="1" opacity=".35"/></pattern>
+      <pattern id="crosshatch" width="9" height="9" patternUnits="userSpaceOnUse"><path d="M0 0L9 9M9 0L0 9" stroke="currentColor" stroke-width=".6" opacity=".42"/></pattern>
+      <pattern id="brick" width="24" height="11" patternUnits="userSpaceOnUse"><path d="M0 0H24M12 0V6M0 6H24M0 6V11M24 6V11" stroke="currentColor" stroke-width=".8" opacity=".22"/></pattern>
+      <symbol id="camera-art" viewBox="0 0 240 176">
+        <g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+          <path stroke-width="3" d="M15 147H225M36 148l15-88 18-23 22 11 5 47 18 7-8 46M95 148l13-39M55 58l20 25"/>
+          <circle cx="130" cy="45" r="33" stroke-width="4"/><circle cx="130" cy="45" r="24" stroke-width="1.4"/>
+          <circle cx="130" cy="45" r="9" stroke-width="3"/><circle cx="130" cy="28" r="8"/><circle cx="114" cy="50" r="8"/><circle cx="146" cy="50" r="8"/>
+          <circle cx="188" cy="55" r="25" stroke-width="4"/><circle cx="188" cy="55" r="17"/><circle cx="188" cy="55" r="7"/>
+          <path stroke-width="4" d="M109 77h102v53H109zM211 86l21-15v64l-21-14M138 130v18m37-18 9 18M113 87h93M123 116h56M42 56c-6-8-5-24 5-31 19-13 29 7 30 22m-17-18 12-14M31 75l-8 22 23 13m17-26 13 27"/>
+          <path stroke-width="1.2" d="M117 80l23 45m-10-45 23 45m-10-45 23 45m-10-45 23 45m-10-45 23 45m-10-45 23 45M35 146l38-34m-22 34 24-23"/>
+        </g>
+      </symbol>
+      <symbol id="star-art" viewBox="0 0 240 176">
+        <g stroke="currentColor" stroke-linejoin="round">
+          <path d="M54 175c11-44 33-51 59-58l12-23 28 1 13 24c32 4 49 23 55 56Z" fill="url(#crosshatch)" stroke-width="3"/>
+          <path d="M75 62c1-34 17-55 47-55 26-3 46 12 48 47 7 7 11 20 5 33l-20 13-13 18-24 10-19-17-19-11-10-28Z" fill="var(--paper-art, #e5cd9f)" stroke-width="3"/>
+          <path d="M77 58c-3-38 24-56 47-55 25-1 49 20 47 53-14-3-24-13-30-25-11 17-36 24-64 27Z" fill="url(#crosshatch)" stroke-width="3"/>
+          <path d="M82 54c-6 22-5 40 9 51l-17 10c-24-21-21-49-10-63ZM162 55c9 22 5 43-7 54l21 4c17-27 13-47-6-64Z" fill="currentColor" opacity=".75"/>
+          <path d="M95 67l21-4m16 1 20 4M96 75l13 3m23 0 13-3M114 90q13 11 27 0M117 112q11 8 25 0M104 129l15 21 19-24M73 162l23-28m87 29-24-31" fill="none" stroke-width="2"/>
+          <path d="M112 70l-2 10m27-10 2 10" stroke-width="2.5"/>
+        </g>
+      </symbol>
+      <symbol id="moon-art" viewBox="0 0 240 176">
+        <g fill="none" stroke="currentColor" stroke-width="2.7">
+          <circle cx="120" cy="87" r="68"/><circle cx="120" cy="87" r="64" stroke-width=".8"/>
+          <path d="M84 47c27-15 62-4 73 18M57 104c10 31 37 48 68 49M157 120c13-10 17-19 20-31"/>
+          <path d="M83 77c12-11 21-9 33-1l-9 4-11-1m26-6c12-8 25-7 35 5l-13 1-12-2M116 83q-10 15-11 25 17 5 31-2m-40 15q24 12 48-2" stroke-width="3"/>
+          <path d="M28 133l35-23 21 5-28 27-27 1ZM190 41l24-13-8 23-20 14m-9-13 31-15" stroke-width="2"/>
+          <path d="M22 34l8 3-8 4-4 10-4-10-8-4 8-3 4-9ZM205 126l6 9 11 3-11 5-5 10-5-10-10-5 10-3ZM48 14l4 7 8 3-8 3-4 7-4-7-8-3 8-3"/>
+          <path d="M25 168H219M49 159l-11 9m150-11 12 11" stroke-width="1"/>
+        </g>
+      </symbol>
+      <symbol id="globe-art" viewBox="0 0 240 176">
+        <g stroke="currentColor" stroke-width="2.7" fill="none">
+          <circle cx="119" cy="77" r="64"/><ellipse cx="119" cy="77" rx="30" ry="64"/><path d="M55 77h128M65 44h108M65 110h108M119 13v128"/>
+          <path d="M87 36l17 4 9 13-9 17 13 10 4 25-16 16-14-5-6-22-17-12 8-15-1-20ZM135 31l24 8 12 16-15 18-9-7-17 7-7-18Z" stroke-width="1.4" fill="url(#etching)"/>
+          <path d="M113 142v13m-26 8h66m-53-9h39m-60 10v7h80v-7M172 125l15 15" stroke-width="4"/>
+          <circle cx="120" cy="77" r="68" stroke-width="1"/>
+        </g>
+      </symbol>
+      <symbol id="filigree" viewBox="0 0 140 90">
+        <g stroke="currentColor" stroke-width="2" fill="none">
+          <circle cx="70" cy="45" r="24" stroke-width="4"/><circle cx="70" cy="45" r="9"/><circle cx="57" cy="33" r="7"/><circle cx="82" cy="33" r="7"/><circle cx="57" cy="57" r="7"/><circle cx="82" cy="57" r="7"/>
+          <path d="M47 39C18 9 8 35 22 42s26-3 9-19M93 39c27-30 37-4 24 3s-26-3-9-19M48 61C20 84 9 62 26 54M92 61c29 23 39 1 22-7M11 70q24 0 37 14m81-14q-24 0-37 14"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="app-bar" role="banner">
+    <div class="app-bar-inner">
+      <button class="icon-button mobile-menu" id="menu-toggle" aria-label="Open navigation" aria-expanded="false"><span class="hamburger">☰</span></button>
+      <a class="app-brand" href="#top" aria-label="PHEME home">PHEME</a>
+      <nav class="nav-links" id="main-nav" aria-label="Main navigation">
+        <a href="#top" class="nav-active" id="today-link">Today</a>
+        <button class="text-button" id="archive-button">Archive</button>
+        <button class="text-button" id="sections-button" aria-expanded="false">Sections <span aria-hidden="true">⌄</span></button>
+        <button class="text-button" id="bookmarks-button">Bookmarks <span class="bookmark-count" id="bookmark-count"></span></button>
+      </nav>
+      <div class="bar-actions">
+        <button class="icon-button" id="search-toggle" aria-label="Search stories" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button>
+        <button class="icon-button" id="print-button" aria-label="Print newspaper" title="Print newspaper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 9V3h14v6M5 18H3V9h18v9h-2M6 14h12v7H6zM17 11h2"/></svg></button>
+        <button class="icon-button settings-gear" id="settings-toggle" aria-label="Open settings" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m10 2-.4 2.1-1.9.8-1.8-1.2-2.2 2.2 1.2 1.8-.8 1.9L2 10v4l2.1.4.8 1.9-1.2 1.8 2.2 2.2 1.8-1.2 1.9.8L10 22h4l.4-2.1 1.9-.8 1.8 1.2 2.2-2.2-1.2-1.8.8-1.9L22 14v-4l-2.1-.4-.8-1.9 1.2-1.8-2.2-2.2-1.8 1.2-1.9-.8L14 2Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+    </div>
+    <div class="search-bar" id="search-bar" hidden><label for="search-input">FIND A STORY</label><input id="search-input" type="search" placeholder="Search country news and verified events..." autocomplete="off"><button id="search-close" aria-label="Close search">✕</button></div>
+    <div class="sections-menu" id="sections-menu" hidden>
+      <a href="#section-01">Section 01</a><a href="#section-02">Section 02</a><a href="#section-03">Section 03</a><a href="#section-04">Section 04</a><a href="#section-05">Section 05</a><a href="#section-06">Section 06</a><a href="#section-07">Section 07</a>
+    </div>
+  </header>
+
+  <main class="newspaper" id="top">
+    <svg class="paper-noise" preserveAspectRatio="none" aria-hidden="true"><filter id="noise-filter"><feTurbulence type="fractalNoise" baseFrequency=".69" numOctaves="3" seed="7" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#noise-filter)" opacity=".24"/></svg>
+    <div class="paper-content">
+      <div class="running-head"><span>ALL THE STORIES THAT MOVE THE WORLD</span><span id="pheme-edition-count">PERSONAL EDITION · NO COUNTRIES SELECTED</span></div>
+      <header class="newspaper-head">
+        <div class="masthead">
+          <div class="mast-side mast-side-left"><span>AN INDEPENDENT</span><strong>CHRONICLE</strong><span>OF WORLD EVENTS</span></div>
+          <svg class="mast-ornament" viewBox="0 0 140 90" aria-hidden="true"><use href="#filigree"/></svg>
+          <h1>PHEME</h1>
+          <svg class="mast-ornament" viewBox="0 0 140 90" aria-hidden="true"><use href="#filigree"/></svg>
+          <div class="mast-side mast-side-right"><span>THE WORLD'S</span><strong>DAILY EDITION</strong><span>OF WORLD & CULTURE</span></div>
+        </div>
+        <div class="edition-line"><span>VOL. I &nbsp; · &nbsp; NO. 001</span><span>WORLD NEWS FOR AN IMAGINATIVE TOMORROW</span><time id="date-label" datetime="2026-10-29">THURSDAY, OCTOBER 29, 2026</time></div>
+        <div class="rubric"><span class="rubric-wing"></span><span>AN INDEPENDENT CHRONICLE OF WORLD EVENTS</span><span class="rubric-wing"></span></div>
+        <div class="fine-rule"></div>
+      </header>
+
+      <div class="edition-grid">
+        <aside class="story-rail left-rail" aria-label="Left newspaper column">
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">YOUR NEWSROOM</div><h3 class="side-title">COUNTRY SELECTION</h3><p class="story-text">Select the countries you wish to read about from Settings.</p></article>
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">EVIDENCE FIRST</div><h3 class="side-title">SOURCE COVERAGE</h3><p class="story-text">Read the original linked reporting behind each account.</p></article>
+        </aside>
+        <section class="lead-column" aria-label="Lead newspaper column">
+          <article class="pheme-story-card pheme-feature pheme-placeholder"><div class="section-label">PHEME · DAILY EDITION</div><h2 class="lead-title">YOUR WORLD, YOUR NEWSPAPER</h2><p class="pheme-card-copy">No countries are selected by default. Your newspaper fills with reports when you choose countries in Settings.</p></article>
+        </section>
+        <aside class="story-rail right-rail" aria-label="Right newspaper column">
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">YOUR PREFERENCES</div><h3 class="side-title">NEWS SECTIONS</h3><p class="story-text">Show the sections that matter to you.</p></article>
+          <article class="pheme-story-card pheme-placeholder"><div class="section-label">WORLD REPORT</div><h3 class="side-title">LANGUAGE</h3><p class="story-text">Read English source reporting by default or choose another available original language.</p></article>
+        </aside>
+      </div>
+
+      <div class="paper-footer"><span>THE PHEME CHRONICLE</span><span>— ATTRIBUTED NEWS · SOURCES PRESERVED —</span><span>EST. MMXXVI</span></div>
+    </div>
+  </main>
+
+  <aside class="settings-panel" id="settings-panel" aria-label="Display settings" aria-hidden="true" inert>
+    <div class="settings-head"><div><span class="eyebrow">PERSONALIZE YOUR EDITION</span><h2>Settings</h2></div><button class="icon-button" id="settings-close" aria-label="Close settings">✕</button></div>
+    <fieldset class="paper-options"><legend>Paper Type</legend><p class="setting-caption">Choose the stock on which your edition is printed.</p>
+      <label><input type="radio" name="paper" value="newsprint" checked><span class="paper-swatch swatch-newsprint"></span><span><strong>Newsprint</strong><small>Traditional daily paper · Default</small></span></label>
+      <label><input type="radio" name="paper" value="parchment"><span class="paper-swatch swatch-parchment"></span><span><strong>Parchment</strong><small>Warm antiqued parchment</small></span></label>
+      <label><input type="radio" name="paper" value="rag"><span class="paper-swatch swatch-rag"></span><span><strong>Rag Paper</strong><small>Soft archival cotton stock</small></span></label>
+      <label><input type="radio" name="paper" value="linen"><span class="paper-swatch swatch-linen"></span><span><strong>Linen</strong><small>Subtle woven texture</small></span></label>
+      <label><input type="radio" name="paper" value="recycled"><span class="paper-swatch swatch-recycled"></span><span><strong>Recycled Stock</strong><small>Natural flecked fibres</small></span></label>
+    </fieldset>
+    <div class="setting-block"><label for="font-range">Article Text Size <output id="font-output">100%</output></label><input id="font-range" type="range" min="90" max="125" value="100" step="5"></div>
+    <div class="setting-block"><label for="ink-range">Ink Density <output id="ink-output">100%</output></label><input id="ink-range" type="range" min="70" max="100" value="100" step="5"><p class="setting-caption">Monochrome ink, never backlit color.</p></div>
+    <button class="reset-button" id="reset-settings">Restore print defaults</button>
+    <p class="settings-note">Your paper preferences are saved on this device. Country choices are initially empty and saved on this device. Verified stories require a connected news feed.</p>
+    <div id="updates-section" aria-label="Updates"></div>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+  <dialog id="reader-dialog" class="reader-dialog"><button class="dialog-close" id="dialog-close" aria-label="Close story">✕</button><div class="dialog-kicker" id="dialog-kicker">SECTION 02</div><h2 id="dialog-title"></h2><div class="dialog-rule"></div><div id="dialog-body"></div><p class="dialog-colophon">PHEME · THE DAILY CHRONICLE · ORIGINAL REPORTING CREDITED</p></dialog>
+  <dialog id="archive-dialog" class="archive-dialog"><button class="dialog-close" data-close-dialog="archive-dialog" aria-label="Close archive">✕</button><p class="eyebrow">THE PRINTED RECORD</p><h2>Edition Archive</h2><div class="dialog-rule"></div><button class="archive-entry" id="archive-open"><span>VOL. I · NO. 001</span><strong>Current global edition</strong><small>Country-selected reports · continually updated</small></button><p class="archive-note">The current edition updates from publicly attributed reporting. Historic edition archiving and independent claim verification are being developed.</p></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <link rel="stylesheet" href="./updates/updates.css">
+  <script src="./updates/updates.js" defer></script>
+  <script src="./app.js" defer></script>
+  <script src="./news-engine.js" defer></script>
 </body>
 </html>
